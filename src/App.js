@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-  // code của Tuan
+  // code của
   useEffect(() => {
     fetchData();
   }, []);
