@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import HomePage from "./components/homepage";
 
 function App() {
   const [videos, setVideos] = useState([]);
@@ -26,7 +27,11 @@ function App() {
   };
   return (
     <div>
-      <h1>Videos from API</h1>
+      {/* <Header /> */}
+      <HomePage title="Body" color="red" />
+      {/* <Footer /> */}
+      <HomePage title="Main" color="green" />
+      <div className="custom">custom</div>
       {loading ? (
         <p>Loading...</p>
       ) : (
