@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
-import '../assets/styles/booking.css';
-const Booking = () => {
+
+const RowTable = () => {
   const [bookings, setBookings] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
   const [expertInfoVisible, setExpertInfoVisible] = useState(false);
@@ -23,7 +23,6 @@ const Booking = () => {
         );
         if (response.data.success) {
           setBookings(response.data.data.data);
-          console.log(response.data.data.data)
         }
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -45,41 +44,35 @@ const Booking = () => {
 
   const columns = [
     {
-      title: "Booking ID",
-      dataIndex: "id",
-      key: "id",
-      className: "booking-id-column",
+      title: 'Booking ID',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      className: "status-column",
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
-      title: "Note",
-      dataIndex: "note",
-      key: "note",
-      className: "note-column",
+      title: 'Note',
+      dataIndex: 'note',
+      key: 'note',
     },
     {
-      title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
+      title: 'Created At',
+      dataIndex: 'created_at',
+      key: 'created_at',
       render: (text) => new Date(text).toLocaleString(),
-
     },
     {
-      title: "Updated At",
-      dataIndex: "updated_at",
-      key: "updated_at",
+      title: 'Updated At',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
       render: (text) => new Date(text).toLocaleString(),
-
     },
     {
-      title: "User Information",
-      key: "user_info",
-      className: "user-info-column",
+      title: 'User Information',
+      key: 'user_info',
       render: (record) => (
         <Button onClick={() => handleUserInfoClick(record)}>
           Show User Info
@@ -87,9 +80,8 @@ const Booking = () => {
       ),
     },
     {
-      title: "Calendar Information",
-      key: "calendar_info",
-      className: "calendar-info-column",
+      title: 'Calendar Information',
+      key: 'calendar_info',
       render: (record) => (
         <Button onClick={() => handleExpertInfoClick(record)}>
           Show Expert Info
@@ -98,9 +90,8 @@ const Booking = () => {
     },
   ];
 
-
   return (
-    <div style={{ overflowX: "auto",  }}>
+    <div style={{ overflowX: 'auto' }}>
       <h1>Bookings</h1>
       <Table
         dataSource={bookings}
@@ -134,41 +125,23 @@ const Booking = () => {
         onCancel={() => setExpertInfoVisible(false)}
         footer={null}
       >
-        {selectedBooking &&
-          selectedBooking.calendar &&
-          selectedBooking.calendar.expert_detail && (
-            <div>
-              <img
-                src={
-                  selectedBooking.calendar.expert_detail.user.profile_picture
-                }
-                alt=""
-              />
+        {selectedBooking && selectedBooking.calendar && selectedBooking.calendar.expert_detail && (
+          <div>
+            <img src={selectedBooking.calendar.expert_detail.user.profile_picture} alt="" />
 
-              <p>Name: {selectedBooking.calendar.expert_detail.user.name}</p>
-              <p>Email: {selectedBooking.calendar.expert_detail.user.email}</p>
-              <p>
-                Experience: {selectedBooking.calendar.expert_detail.experience}
-              </p>
-              <p>
-                Average Rating:{" "}
-                {selectedBooking.calendar.expert_detail.average_rating}
-              </p>
-              <p>
-                Start Time:{" "}
-                {new Date(selectedBooking.calendar.start_time).toLocaleString()}
-              </p>
-              <p>
-                End Time:{" "}
-                {new Date(selectedBooking.calendar.end_time).toLocaleString()}
-              </p>
-              <p>Price: ${selectedBooking.calendar.price}</p>
-              <p>Description: {selectedBooking.calendar.describe}</p>
-            </div>
-          )}
+            <p>Name: {selectedBooking.calendar.expert_detail.user.name}</p>
+            <p>Email: {selectedBooking.calendar.expert_detail.user.email}</p>
+            <p>Experience: {selectedBooking.calendar.expert_detail.experience}</p>
+            <p>Average Rating: {selectedBooking.calendar.expert_detail.average_rating}</p>
+            <p>Start Time: {new Date(selectedBooking.calendar.start_time).toLocaleString()}</p>
+            <p>End Time: {new Date(selectedBooking.calendar.end_time).toLocaleString()}</p>
+            <p>Price: ${selectedBooking.calendar.price}</p>
+            <p>Description: {selectedBooking.calendar.describe}</p>
+          </div>
+        )}
       </Modal>
     </div>
   );
 };
 
-export default Booking;
+export default RowTable;

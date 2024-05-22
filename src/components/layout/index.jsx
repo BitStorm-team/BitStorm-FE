@@ -5,7 +5,6 @@ import { jwtDecode } from "jwt-decode"; // Correctly import jwtDecode
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
   HomeOutlined,
@@ -13,6 +12,7 @@ import {
   MessageFilled,
   MailFilled,
   LoginOutlined,
+  PayCircleOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Input, Avatar, Badge, Space } from "antd";
@@ -113,6 +113,11 @@ const LayoutAdmin = ({ main }) => {
       key: "6",
       icon: <MailFilled />,
       label: <Link to="/contact">Contact</Link>,
+    },
+    {
+      key: "7",
+      icon: <PayCircleOutlined />,
+      label: <Link to="/booking">Booking</Link>,
     },
   ];
 

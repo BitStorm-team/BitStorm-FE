@@ -9,6 +9,7 @@ import Expert from "../pages/Expert";
 
 import LayoutAdmin from "../components/layout";
 import Post from "../pages/Post";
+import Booking from "../pages/Booking";
 
 export const publicRoutes = [
   {
@@ -57,6 +58,11 @@ export const privateRoutes = [
   {
     path: "/contact",
     element: <LayoutAdmin main={<Contact />} />,
+    exact: true,
+  },
+  {
+    path: "/booking",
+    element: <LayoutAdmin main={<Booking />} />,
     exact: true,
   },
 ];
