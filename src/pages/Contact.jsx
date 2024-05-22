@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
+import "../assets/styles/booking.css";
 
-const Contact = () => {
+const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
-  const [expertInfoVisible, setExpertInfoVisible] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
 
   useEffect(() => {
@@ -22,7 +22,8 @@ const Contact = () => {
           }
         );
         if (response.data.success) {
-          setContacts(response.data.data.data);
+          setContacts(response.data.data.contacts);
+          console.log("Contacts fetched successfully");
         }
       } catch (error) {
         console.error("Error fetching contacts:", error);
@@ -37,61 +38,54 @@ const Contact = () => {
     setUserInfoVisible(true);
   };
 
-  const handleExpertInfoClick = (record) => {
-    setSelectedContact(record);
-    setExpertInfoVisible(true);
-  };
-
   const columns = [
     {
-      title: 'Contact ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Contact ID",
+      dataIndex: "id",
+      key: "id",
+      className: "contact-id-column",
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      className: "status-column",
+      render: (status) => (status === 0 ? "No" : "Yes"),
     },
     {
-      title: 'Note',
-      dataIndex: 'note',
-      key: 'note',
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
+      className: "content-column",
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (text) => new Date(text).toLocaleString(),
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
       render: (text) => new Date(text).toLocaleString(),
     },
     {
-      title: 'User Information',
-      key: 'user_info',
+      title: "Action",
+      key: "user_info",
+      className: "user-info-column",
       render: (record) => (
-        <Button onClick={() => handleUserInfoClick(record)}>
-          Show User Info
-        </Button>
-      ),
-    },
-    {
-      title: 'Calendar Information',
-      key: 'calendar_info',
-      render: (record) => (
-        <Button onClick={() => handleExpertInfoClick(record)}>
-          Show Expert Info
-        </Button>
+        <div className="user-info" style={{display : "flex" , gap : "10px"}}>
+          <Button onClick={() => handleUserInfoClick(record)}>User Info</Button>
+          <Button onClick={() => handleUserInfoClick(record)}>Update</Button>
+          <Button onClick={() => handleUserInfoClick(record)}>Reply</Button>
+        </div>
       ),
     },
   ];
 
   return (
-    <div style={{ overflowX: 'auto' }}>
+    <div style={{ overflowX: "auto" }}>
       <h1>Contacts</h1>
       <Table
         dataSource={contacts}
@@ -121,4 +115,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Contacts;
