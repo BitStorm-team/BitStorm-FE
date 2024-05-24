@@ -1,9 +1,10 @@
-
+import CreateComment from "./Comment/CreateComment";
 import { useState, useEffect } from "react";
-import { Table, Button, Modal } from "antd";
+import { Table, Button } from "antd";
+import Link from "antd/es/typography/Link";
 const Comment = () => {
   const [comments, setComments] = useState([]);
-
+  const [postID, setPostId] = useState([])
   useEffect(() => {
     const fetchComments = async () => {
       const token = localStorage.getItem('__token__');
@@ -28,9 +29,11 @@ const Comment = () => {
         }
       
         const data = await res.json(); // Parse the JSON from the response
-      
-        if (data.success) {
-          setComments(data.data.data); // Use the parsed data
+        const comments = data.data.data;
+        if (Array.isArray(comments)) {
+          setComments(comments);
+          const postId = comments.map(comment => comment.post_id);
+          setPostId(postId);
         }
       
       } catch (error) {
@@ -91,7 +94,7 @@ const Comment = () => {
   ];
   return (
     <div>
-      <Button>Create comments</Button>
+      <Link></Link>
         <h1>Comments</h1>
       <Table
         dataSource={comments}
