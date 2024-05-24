@@ -3,8 +3,10 @@ import axios from "axios";
 import { Table, Button, Modal } from "antd";
 import "../assets/styles/booking.css";
 
-const User = () => {
-  const [users, setUsers] = useState([]);
+
+  const User = () => {
+    const [users, setUsers] = useState([]);
+    const [status, setStatus] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -23,6 +25,7 @@ const User = () => {
         );
         if (response.data.success) {
           setUsers(response.data.data);
+          console.log(response.data.data)
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -31,11 +34,11 @@ const User = () => {
 
     fetchUsers();
   }, []);
-
-  const handleUserInfoClick = (user) => {
-    setSelectedUser(user);
-    setUserInfoVisible(true);
-  };
+    
+  //  const handleUserInfoClick = (user) => {
+  //    setSelectedUser(user);
+  //    setUserInfoVisible(true);
+  //  };
 
   const columns = [
     {
@@ -71,8 +74,31 @@ const User = () => {
     {
       title: "Actions",
       key: "actions",
+      // render: (record) => (
+      //   <Button onClick={() => handleUserInfoClick(record)}>View</Button>
+      // ), ,
       render: (record) => (
-        <Button onClick={() => handleUserInfoClick(record)}>View</Button>
+        <div className="btn-group" style={{ marginRight: "10px" }}>
+          <input onChange={(e)=>{console.log(e.target.value);}}
+            type="radio"
+            className="btn-check"
+            id="active"
+            value="1"
+          ></input>
+          <label className="btn btn-outline-primary" htmlFor="active">
+            Active
+          </label>
+
+          <input onChange={(e)=>{console.log(e.target.value);}}
+            type="radio"
+            className="btn-check"
+            id="active"
+            value="0"
+          ></input>
+          <label className="btn btn-outline-primary" htmlFor="active">
+            Unactive
+          </label>
+        </div>
       ),
     },
   ];
@@ -81,8 +107,7 @@ const User = () => {
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
       <Table dataSource={users} columns={columns} rowKey="id" />
-      <Modal
-        
+      <Modal       
         title="User Information"
         visible={userInfoVisible}
         onCancel={() => setUserInfoVisible(false)}
