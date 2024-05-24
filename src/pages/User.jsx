@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Button, Modal } from "antd";
+import { Table, Button, Modal, Popconfirm, message } from "antd";
 import "../assets/styles/booking.css";
-
-
-  const User = () => {
-    const [users, setUsers] = useState([]);
-    const [status, setStatus] = useState([]);
-  const [userInfoVisible, setUserInfoVisible] = useState(false);
+import { headerAPI } from "../utils/helpers";
+const User = () => {
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("__token__");
-
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
@@ -25,7 +21,6 @@ import "../assets/styles/booking.css";
         );
         if (response.data.success) {
           setUsers(response.data.data);
-          console.log(response.data.data)
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -34,17 +29,13 @@ import "../assets/styles/booking.css";
 
     fetchUsers();
   }, []);
-    
-  //  const handleUserInfoClick = (user) => {
-  //    setSelectedUser(user);
-  //    setUserInfoVisible(true);
-  //  };
 
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: "Name",
@@ -60,6 +51,7 @@ import "../assets/styles/booking.css";
       title: "Address",
       dataIndex: "address",
       key: "address",
+      className: "small-column",
     },
     {
       title: "Phone Number",
@@ -72,47 +64,77 @@ import "../assets/styles/booking.css";
       key: "gender",
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (statusValue) => (
+        <span style={{ color: statusValue === 1 ? "blue" : "red" }}>
+          {statusValue === 1 ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
       title: "Actions",
       key: "actions",
-      // render: (record) => (
-      //   <Button onClick={() => handleUserInfoClick(record)}>View</Button>
-      // ), ,
       render: (record) => (
-        <div className="btn-group" style={{ marginRight: "10px" }}>
-          <input onChange={(e)=>{console.log(e.target.value);}}
-            type="radio"
-            className="btn-check"
-            id="active"
-            value="1"
-          ></input>
-          <label className="btn btn-outline-primary" htmlFor="active">
-            Active
-          </label>
-
-          <input onChange={(e)=>{console.log(e.target.value);}}
-            type="radio"
-            className="btn-check"
-            id="active"
-            value="0"
-          ></input>
-          <label className="btn btn-outline-primary" htmlFor="active">
-            Unactive
-          </label>
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+          }}
+        >
+          <Popconfirm
+            key={record.id}
+            title="Update status this Expert"
+            description="Are you sure to update the status of this user?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleUpdateUserStatus(record)}
+          >
+            <Button
+              style={{
+                backgroundColor: record.status === 1 ? "blue" : "white",
+                color: record.status === 1 ? "white" : "blue",
+              }}
+            >
+              Update
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },
   ];
 
+    const handleUpdateUserStatus = async (record) => {
+      const updatedStatus = record.status === 0 ? 1 : 0;
+      try {
+        const END_POINT = `http://127.0.0.1:8000/api/admin/experts/${record.id}`;
+        const updatedData = {
+          status: updatedStatus,
+        };
+        const headers = headerAPI();
+        const response = await axios.put(END_POINT, updatedData, { headers });
+        console.log("Updated user:", response.data);
+        if (response.data.success) {
+          setUsers((prevUserInfo) =>
+            prevUserInfo.map((user) =>
+              user.id === record.id
+                ? { ...user, status: updatedStatus }
+                :user
+            )
+          );
+          message.success("Status updated successfully");
+        }
+      } catch (error) {
+        console.error("Error updating user:", error);
+        message.error("Failed to update status");
+      }
+  };
+  
   return (
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
       <Table dataSource={users} columns={columns} rowKey="id" />
-      <Modal       
-        title="User Information"
-        visible={userInfoVisible}
-        onCancel={() => setUserInfoVisible(false)}
-        footer={null}
-      >
         {selectedUser && (
           <div>
             <p>ID: {selectedUser.id}</p>
@@ -123,7 +145,6 @@ import "../assets/styles/booking.css";
             <p>Gender: {selectedUser.gender}</p>
           </div>
         )}
-      </Modal>
     </div>
   );
 };

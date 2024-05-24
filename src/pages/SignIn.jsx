@@ -16,7 +16,7 @@ const SignIn = () => {
     const fetchCsrfToken = async () => {
       try {
         const response = await axios.get(
-          "https://bit-storm-be.zeabur.app/api/csrf-token",
+          "https://bitstormbe.zeabur.app/api/csrf-token",
           {
             withCredentials: true,
           }

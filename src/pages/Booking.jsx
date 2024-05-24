@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
 import '../assets/styles/booking.css';
+import { fetchAPI } from "../utils/helpers";
 const Booking = () => {
   const [bookings, setBookings] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
@@ -9,28 +10,8 @@ const Booking = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      const token = localStorage.getItem("__token__");
-
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/bookings",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          setBookings(response.data.data.data);
-          console.log(response.data.data.data)
-        }
-      } catch (error) {
-        console.error("Error fetching bookings:", error);
-      }
-    };
-
-    fetchBookings();
+    const END_POINT = 'http://127.0.0.1:8000/api/admin/bookings';
+    fetchAPI(END_POINT,setBookings)
   }, []);
 
   const handleUserInfoClick = (record) => {
