@@ -1,0 +1,6 @@
+.content-column{
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

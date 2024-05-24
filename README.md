@@ -74,6 +74,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## install ant design
 --->>> npm install antd --save
+## install ant design icon 
+npm install @ant-design/icons --save
+link to find icon: https://ant.design/components/icon
 
 
 ## install animation lib
