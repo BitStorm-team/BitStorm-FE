@@ -187,7 +187,7 @@ const Contacts = () => {
               width: "12%",
             }}
             onClick={() => handleUserInfoClick(record)}
-            icon={<EyeOutlined  style={{ color: "blue" }} />}
+            icon={<EyeOutlined style={{ color: "blue" }} />}
           />
           <Button
             onClick={() =>
