@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Avatar, Button, Modal, Table, message } from "antd";
+import { Avatar, Button, Modal, Popconfirm, Table, message } from "antd";
 import axios from "axios";
-import { fetchAPIUserExpert,headerAPI } from "../utils/helpers";
+import { fetchAPIUserExpert, headerAPI } from "../utils/helpers";
 import "../assets/styles/expert.css";
 const Expert = () => {
   const [experts, setExperts] = useState([]);
@@ -50,8 +50,22 @@ const Expert = () => {
     }
   };
 
-  const handleDeleteExpert = (expert) => {
-    // Your delete logic here
+  const handleDeleteExpert = async (record) => {
+    try {
+      const END_POINT = `http://127.0.0.1:8000/api/admin/experts/${record.id}`;
+      const headers = headerAPI();
+      const response = await axios.delete(END_POINT, { headers });
+      console.log(response.message);
+      if (response.data.success) {
+        setExperts((prevExperts) =>
+          prevExperts.filter((expert) => expert.id !== record.id)
+        );
+        message.success("Expert deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting expert:", error);
+      message.error("Failed to delete expert");
+    }
   };
 
   const columns = [
@@ -60,42 +74,42 @@ const Expert = () => {
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a.id - b.id,
-
     },
     {
       title: "Avatar",
       dataIndex: "profile_picture",
       key: "profile_picture",
-      render  : (profile_picture) => ( <Avatar
-        size={{
-          xs: 18,
-          sm: 20,
-          md: 30,
-          lg: 54,
-          xl: 60,
-          xxl: 100,
-        }}
-        src ={profile_picture}
-      />)
+      render: (profile_picture) => (
+        <Avatar
+          size={{
+            xs: 18,
+            sm: 20,
+            md: 30,
+            lg: 54,
+            xl: 60,
+            xxl: 100,
+          }}
+          src={profile_picture}
+        />
+      ),
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      className : "small-column"
-
+      className: "small-column",
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      className : "small-column"
+      className: "small-column",
     },
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
-      className : "small-column"
+      className: "small-column",
     },
     {
       title: "Phone Number",
@@ -133,14 +147,41 @@ const Expert = () => {
       title: "Actions",
       key: "actions",
       render: (record) => (
-        <div style={{
-           display : 'flex',
-          //  flexDirection : 'column',
-           gap : '10px',
-        }}>
+        <div
+          style={{
+            display: "flex",
+            //  flexDirection : 'column',
+            gap: "10px",
+          }}
+        >
           <Button onClick={() => handleUserInfoClick(record)}>View</Button>
-          <Button style={{ backgroundColor: record.status === 1 ? "green" : "red" }} onClick={() => handleUpdateExpert(record)}>Update</Button>
-          <Button danger onClick={() => handleDeleteExpert(record)}>Delete</Button>
+          <Popconfirm
+            key={record.id}
+            title="Update status this Expert"
+            description="Are you sure to update status this Expert?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleUpdateExpert(record)}
+          >
+            <Button
+              style={{
+                backgroundColor: record.status === 1 ? "blue" : "white",
+                color: record.status === 1 ? "white" : "blue",
+              }}
+            >
+              Update
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            key={record.id}
+            title="Delete this Expert"
+            description="Are you sure to delete this Expert?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteExpert(record)}
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </div>
       ),
     },
