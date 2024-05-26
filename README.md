@@ -74,7 +74,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ## install ant design
 --->>> npm install antd --save
-## install ant design icon 
+## install ant design icon
 npm install @ant-design/icons --save
 link to find icon: https://ant.design/components/icon
 
@@ -91,7 +91,7 @@ link to find icon: https://ant.design/components/icon
 
 ---> npm install jwt-decode
 
-## notifications 
+## notifications
 
 ---> npm install --save react-notifications
 
@@ -112,3 +112,6 @@ alert('callback');
 ## install icon fort
 1 npm i --save @fortawesome/fontawesome-svg-core
 2 npm i --save @fortawesome/react-fontawesome@latest
+
+## install boostrap
+-- > npm install bootstrap

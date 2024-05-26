@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Button, Modal, Popconfirm, message } from "antd";
+import { Table, Button, Modal, Popconfirm, message, Avatar } from "antd";
 import "../assets/styles/booking.css";
 import {API_URL, headerAPI} from '../utils/helpers'
 const User = () => {
@@ -38,6 +38,24 @@ const User = () => {
       sorter: (a, b) => a.id - b.id,
     },
     {
+      title: "Avatar",
+      dataIndex: "profile_picture",
+      key: "profile_picture",
+      render: (profile_picture) => (
+        <Avatar
+          size={{
+            xs: 18,
+            sm: 20,
+            md: 30,
+            lg: 54,
+            xl: 60,
+            xxl: 100,
+          }}
+          src={profile_picture}
+        />
+      ),
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
@@ -67,9 +85,21 @@ const User = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (statusValue) => (
-        <span style={{ color: statusValue === 1 ? "blue" : "red" }}>
-          {statusValue === 1 ? "Active" : "Inactive"}
+      render: (status) => (
+        <span>
+          <span
+            style={{
+              display: "inline-block",
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              backgroundColor: status === 1 ? "green" : "red",
+              marginRight: "8px",
+            }}
+          ></span>
+          <span style={{ color: status === 1 ? "green" : "red" }}>
+            {status === 1 ? "active" : "inactive"}
+          </span>
         </span>
       ),
     },
@@ -130,7 +160,7 @@ const User = () => {
         message.error("Failed to update status");
       }
   };
-  
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
