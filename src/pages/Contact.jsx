@@ -16,6 +16,7 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [replyContent, setReplyContent] = useState("");
   const [deleteVisible, setDeleteVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchContacts = async () => {
       const token = localStorage.getItem("__token__");
@@ -33,6 +34,7 @@ const Contacts = () => {
           setContacts(response.data.data.contacts);
           console.log("Contacts fetched successfully");
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching contacts:", error);
         message.error("Failed to fetch contacts");
@@ -225,6 +227,7 @@ const Contacts = () => {
         columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
+        loading={loading}
       />
 
       {/* User Info Modal */}

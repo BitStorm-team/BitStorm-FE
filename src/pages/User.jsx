@@ -6,6 +6,8 @@ import {API_URL, headerAPI} from '../utils/helpers'
 const User = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const token = localStorage.getItem("__token__");
@@ -21,6 +23,7 @@ const User = () => {
         );
         if (response.data.success) {
           setUsers(response.data.data);
+          setLoading(false)
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -51,9 +54,15 @@ const User = () => {
             xl: 60,
             xxl: 100,
           }}
-          src={profile_picture}
+          src={
+            profile_picture
+              ? profile_picture // Sử dụng profile_picture nếu tồn tại
+              : "https://img.freepik.com/free-vector/isolated-young-handsome-man-set-different-poses-white-background-illustration_632498-649.jpg?w=740&t=st=1716713290~exp=1716713890~hmac=3528b47af850651d9c3bafab98d8a0bc83f46cc56d8c17cf4d626aff86848b7d"
+              // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
+          }
         />
       ),
+
     },
     {
       title: "Name",
@@ -164,7 +173,7 @@ const User = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
-      <Table dataSource={users} columns={columns} rowKey="id" />
+      <Table dataSource={users} columns={columns} rowKey="id" loading={loading} />
         {selectedUser && (
           <div>
             <p>ID: {selectedUser.id}</p>

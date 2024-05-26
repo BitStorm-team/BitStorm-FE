@@ -89,9 +89,15 @@ const Expert = () => {
             xl: 60,
             xxl: 100,
           }}
-          src={profile_picture}
+          src={
+            profile_picture
+              ? profile_picture // Sử dụng profile_picture nếu tồn tại
+              : "https://img.freepik.com/free-vector/minimalist-geometric-judith-s-tiktok-profile-picture_742173-12131.jpg?w=740&t=st=1716713128~exp=1716713728~hmac=60ad3a963f72b82a7e9afe82b50fe50e29cba09c3e1990a6b126f39ac3450300"
+              // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
+          }
         />
       ),
+
     },
     {
       title: "Name",
