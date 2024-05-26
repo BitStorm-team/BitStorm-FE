@@ -19,7 +19,7 @@ export default function App() {
             {privateRoutes.map((route, index) =>
               withPrivateRoute({ ...route }, index)
             )}
-            <Route path="*" element={<NotFound />} /> 
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </Provider>
