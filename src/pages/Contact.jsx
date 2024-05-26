@@ -21,7 +21,7 @@ const Contacts = () => {
 
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/contacts",
+          API_URL + "/api/admin/contacts",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const Contacts = () => {
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/admin/contacts/${record.id}`,
+        API_URL + `/api/admin/contacts/${record.id}`,
         { status: updatedStatus },
         {
           headers: {
@@ -91,7 +91,7 @@ const Contacts = () => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/admin/replyEmail`,
+        API_URL + `/api/admin/replyEmail`,
         { message: replyContent, email: selectedContact.email },
         {
           headers: {
@@ -121,7 +121,7 @@ const Contacts = () => {
     }
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/admin/contacts/${selectedContact.id}`,
+        API_URL + `/api/admin/contacts/${selectedContact.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

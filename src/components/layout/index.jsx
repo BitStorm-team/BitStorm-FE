@@ -43,7 +43,7 @@ const LayoutAdmin = ({ main }) => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/admin/admin-profile/${userInfo.sub}`,
+          API_URL + `/api/admin/admin-profile/${userInfo.sub}`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // Include the token in the request headers
