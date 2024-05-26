@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Table, Button, Modal } from "antd";
+import {API_URL} from '../utils/helpers'
 const Comment = () => {
   const [comments, setComments] = useState([]);
 
@@ -15,7 +16,7 @@ const Comment = () => {
       }
 
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/admin/comments', {
+        const res = await fetch(API_URL + '/admin/comments', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Layout, Button, Row, Col, Typography, Form, Input } from "antd";
 import axios from "axios";
 import signinbg from "../assets/images/img-signin.jpg";
-import { setStorage } from "../utils/helpers";
+import {API_URL, setStorage} from '../utils/helpers'
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -31,7 +31,7 @@ const SignIn = () => {
   }, []);
 
   const onFinish = async (values) => {
-    const URL = "http://localhost:8000/api/auth/login"; // Thay thế bằng URL thực tế của bạn
+    const URL =  API_URL + "/auth/login"; // Thay thế bằng URL thực tế của bạn
     console.log("Success:", values);
     try {
       const response = await axios.post(URL, values, {
