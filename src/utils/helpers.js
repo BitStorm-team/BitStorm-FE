@@ -69,3 +69,5 @@ export function headerAPI() {
   };
   return headers;
 }
+export const API_URL = process.env.API_URL || 'https://bitstormbe.zeabur.app/api/admin';
+export const API_URL_AUTH = process.env.API_URL_AUTH || 'https://bitstormbe.zeabur.app/api';

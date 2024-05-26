@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Layout, Button, Row, Col, Typography, Form, Input } from "antd";
+import { Layout, Button, Row, Col, Typography, Form, Input, message } from "antd";
 import axios from "axios";
 import signinbg from "../assets/images/img-signin.jpg";
-import { setStorage } from "../utils/helpers";
+import {  API_URL_AUTH, setStorage } from "../utils/helpers";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -16,7 +16,7 @@ const SignIn = () => {
     const fetchCsrfToken = async () => {
       try {
         const response = await axios.get(
-          "https://bitstormbe.zeabur.app/api/csrf-token",
+          `${API_URL_AUTH}/csrf-token`,
           {
             withCredentials: true,
           }
@@ -31,7 +31,7 @@ const SignIn = () => {
   }, []);
 
   const onFinish = async (values) => {
-    const URL = "http://localhost:8000/api/auth/login"; // Thay thế bằng URL thực tế của bạn
+    const URL = `${API_URL_AUTH}/auth/login`; // Thay thế bằng URL thực tế của bạn
     console.log("Success:", values);
     try {
       const response = await axios.post(URL, values, {
@@ -47,14 +47,16 @@ const SignIn = () => {
       window.location.href = "/";
     } catch (error) {
       console.log(error);
-      alert(
-        "Login failed: " + (error.response?.data?.message || error.message)
-      );
+      message.error(error.response?.data?.message || error.message)
+      // alert(
+      //   "Login failed: " + (error.response?.data?.message || error.message)
+      // );
     }
   };
 
   const onFinishFailed = (errorInfo) => {
-    alert("Please enter the email and password!");
+    // alert("Please enter the email and password!");
+    message.error(errorInfo.message)
   };
 
   if (localStorage.getItem("permission")) {

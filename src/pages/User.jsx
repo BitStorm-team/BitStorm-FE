@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Button, Modal, Popconfirm, message } from "antd";
+import { Table, Button, Modal, Popconfirm, message, Avatar } from "antd";
 import "../assets/styles/booking.css";
-import { headerAPI } from "../utils/helpers";
+import { API_URL, headerAPI } from "../utils/helpers";
 const User = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -11,14 +11,11 @@ const User = () => {
     const token = localStorage.getItem("__token__");
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/users",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.data.success) {
           setUsers(response.data.data);
         }
@@ -36,6 +33,25 @@ const User = () => {
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a.id - b.id,
+    },
+    {
+      title: "Avatar",
+      dataIndex: "profile_picture",
+      key: "profile_picture",
+      render: (profile_picture) => (
+
+        <Avatar
+          size={{
+            xs: 18,
+            sm: 20,
+            md: 30,
+            lg: 54,
+            xl: 60,
+            xxl: 100,
+          }}
+          src={profile_picture}
+        />
+      ),
     },
     {
       title: "Name",
@@ -68,9 +84,21 @@ const User = () => {
       dataIndex: "status",
       key: "status",
       render: (statusValue) => (
-        <span style={{ color: statusValue === 1 ? "blue" : "red" }}>
-          {statusValue === 1 ? "Active" : "Inactive"}
-        </span>
+        <>
+          <span
+            style={{
+              display: "inline-block",
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              backgroundColor: statusValue === 1 ? "green" : "red",
+              marginRight: "8px",
+            }}
+          ></span>
+          <span style={{ color: statusValue === 1 ? "green" : "red" }}>
+            {statusValue === 1 ? "Active" : "Inactive"}
+          </span>
+        </>
       ),
     },
     {
@@ -105,46 +133,44 @@ const User = () => {
     },
   ];
 
-    const handleUpdateUserStatus = async (record) => {
-      const updatedStatus = record.status === 0 ? 1 : 0;
-      try {
-        const END_POINT = `http://127.0.0.1:8000/api/admin/experts/${record.id}`;
-        const updatedData = {
-          status: updatedStatus,
-        };
-        const headers = headerAPI();
-        const response = await axios.put(END_POINT, updatedData, { headers });
-        console.log("Updated user:", response.data);
-        if (response.data.success) {
-          setUsers((prevUserInfo) =>
-            prevUserInfo.map((user) =>
-              user.id === record.id
-                ? { ...user, status: updatedStatus }
-                :user
-            )
-          );
-          message.success("Status updated successfully");
-        }
-      } catch (error) {
-        console.error("Error updating user:", error);
-        message.error("Failed to update status");
+  const handleUpdateUserStatus = async (record) => {
+    const updatedStatus = record.status === 0 ? 1 : 0;
+    try {
+      const END_POINT = `${API_URL}/experts/${record.id}`;
+      const updatedData = {
+        status: updatedStatus,
+      };
+      const headers = headerAPI();
+      const response = await axios.put(END_POINT, updatedData, { headers });
+      console.log("Updated user:", response.data);
+      if (response.data.success) {
+        setUsers((prevUserInfo) =>
+          prevUserInfo.map((user) =>
+            user.id === record.id ? { ...user, status: updatedStatus } : user
+          )
+        );
+        message.success("Status updated successfully");
       }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      message.error("Failed to update status");
+    }
   };
-  
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
       <Table dataSource={users} columns={columns} rowKey="id" />
-        {selectedUser && (
-          <div>
-            <p>ID: {selectedUser.id}</p>
-            <p>Name: {selectedUser.name}</p>
-            <p>Email: {selectedUser.email}</p>
-            <p>Address: {selectedUser.address}</p>
-            <p>Phone Number: {selectedUser.phone_number}</p>
-            <p>Gender: {selectedUser.gender}</p>
-          </div>
-        )}
+      {selectedUser && (
+        <div>
+          <p>ID: {selectedUser.id}</p>
+          <p>Name: {selectedUser.name}</p>
+          <p>Email: {selectedUser.email}</p>
+          <p>Address: {selectedUser.address}</p>
+          <p>Phone Number: {selectedUser.phone_number}</p>
+          <p>Gender: {selectedUser.gender}</p>
+        </div>
+      )}
     </div>
   );
 };

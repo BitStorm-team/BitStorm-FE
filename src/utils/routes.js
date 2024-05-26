@@ -1,8 +1,6 @@
 import Dashboard from "../pages/DashBoard";
 import Contact from "../pages/Contact";
-
 import SignIn from "../pages/SignIn";
-import SignUp from "../pages/SignUp";
 import Comment from "../pages/Comment";
 import User from "../pages/User";
 import Expert from "../pages/Expert";
@@ -17,11 +15,7 @@ export const publicRoutes = [
     element: <SignIn />,
     exact: true,
   },
-  {
-    path: "/signup",
-    element: <SignUp />,
-    exact: true,
-  },
+
 ];
 
 export const privateRoutes = [
