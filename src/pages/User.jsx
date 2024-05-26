@@ -12,7 +12,7 @@ const User = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          API_URL + "/api/admin/users",
+          API_URL + "/admin/users",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -108,7 +108,7 @@ const User = () => {
     const handleUpdateUserStatus = async (record) => {
       const updatedStatus = record.status === 0 ? 1 : 0;
       try {
-        const END_POINT = API_URL + `/api/admin/experts/${record.id}`;
+        const END_POINT = API_URL + `/admin/experts/${record.id}`;
         const updatedData = {
           status: updatedStatus,
         };

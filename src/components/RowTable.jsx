@@ -15,7 +15,7 @@ const RowTable = () => {
 
       try {
         const response = await axios.get(
-          API_URL + "/api/admin/bookings",
+          API_URL + "/admin/bookings",
           {
             headers: {
               Authorization: `Bearer ${token}`,

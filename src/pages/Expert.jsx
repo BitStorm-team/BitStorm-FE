@@ -11,7 +11,7 @@ const Expert = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const END_POINT = API_URL + "/api/admin/experts";
+      const END_POINT = API_URL + "/admin/experts";
       await fetchAPIUserExpert(END_POINT, setExperts);
       setLoading(false);
     };
@@ -27,7 +27,7 @@ const Expert = () => {
   const handleUpdateExpert = async (record) => {
     const updatedStatus = record.status === 0 ? 1 : 0;
     try {
-      const END_POINT = API_URL + `/api/admin/users/${record.id}`;
+      const END_POINT = API_URL + `/admin/users/${record.id}`;
       const updatedData = {
         status: updatedStatus,
       };
@@ -52,7 +52,7 @@ const Expert = () => {
 
   const handleDeleteExpert = async (record) => {
     try {
-      const END_POINT = API_URL + `/api/admin/experts/${record.id}`;
+      const END_POINT = API_URL + `/admin/experts/${record.id}`;
       const headers = headerAPI();
       const response = await axios.delete(END_POINT, { headers });
       console.log(response.message);
