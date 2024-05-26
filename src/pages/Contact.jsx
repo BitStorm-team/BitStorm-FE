@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import "../assets/styles/contacts.css";
+import {API_URL} from '../utils/helpers'
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);

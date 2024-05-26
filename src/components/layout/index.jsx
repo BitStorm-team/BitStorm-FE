@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Input, Avatar, Badge, Space } from "antd";
 import axios from "axios";
+import {API_URL} from '../../utils/helpers'
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
+import {API_URL} from '../utils/helpers'
 
 const RowTable = () => {
   const [bookings, setBookings] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal, Popconfirm, message } from "antd";
 import "../assets/styles/booking.css";
-import { headerAPI } from "../utils/helpers";
+import {API_URL, headerAPI} from '../utils/helpers'
 const User = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
