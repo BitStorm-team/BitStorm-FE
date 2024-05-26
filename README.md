@@ -91,7 +91,7 @@ link to find icon: https://ant.design/components/icon
 
 ---> npm install jwt-decode
 
-## notifications
+## notifications 
 
 ---> npm install --save react-notifications
 
