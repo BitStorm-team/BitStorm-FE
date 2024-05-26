@@ -18,6 +18,7 @@ import {
 import { Button, Layout, Menu, theme, Input, Avatar, Badge, Space } from "antd";
 import axios from "axios";
 import {API_URL} from '../../utils/helpers'
+import DemoAvatar from "../user/DemoAvatar";
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
@@ -210,7 +211,7 @@ const LayoutAdmin = ({ main }) => {
                   {userProfile && userProfile.data.profile_picture ? (
                     <Avatar
                       shape="square"
-                      src={userProfile.data.profile_picture}
+                      src={userProfile.data.profile_picture ? userProfile.data.profile_picture : DemoAvatar()}
                     />
                   ) : (
                     <Avatar shape="square" icon={<UserOutlined />} />
