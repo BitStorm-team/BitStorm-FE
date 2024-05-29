@@ -10,6 +10,7 @@ import Expert from "../pages/Expert";
 import LayoutAdmin from "../components/layout";
 import Post from "../pages/Post";
 import Booking from "../pages/Booking";
+import CreateComment from "../pages/Comment/CreateComment";
 
 export const publicRoutes = [
   {
@@ -44,6 +45,11 @@ export const privateRoutes = [
     path: "/comments",
     element: <LayoutAdmin main={<Comment />} />,
     exact: true,
+  },
+  {
+    path:"/comment/add",
+    element: <LayoutAdmin main={<CreateComment/>}/>,
+    exact:true
   },
   {
     path: "/user",

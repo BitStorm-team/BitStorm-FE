@@ -1,10 +1,20 @@
-import CreateComment from "./Comment/CreateComment";
 import { useState, useEffect } from "react";
-import { Table, Button } from "antd";
-import Link from "antd/es/typography/Link";
+import { Modal,Table, Button } from "antd";
+
 const Comment = () => {
   const [comments, setComments] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [postID, setPostId] = useState([])
+  
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   useEffect(() => {
     const fetchComments = async () => {
       const token = localStorage.getItem('__token__');
@@ -92,9 +102,17 @@ const Comment = () => {
       )
     },
   ];
+
   return (
-    <div>
-      <Link></Link>
+    <div className="comment">
+       <Button type="primary" onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
         <h1>Comments</h1>
       <Table
         dataSource={comments}

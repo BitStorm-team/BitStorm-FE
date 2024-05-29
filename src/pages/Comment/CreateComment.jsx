@@ -3,17 +3,26 @@ import axios from "axios";
 import { Select, Space } from "antd";
 
 const CreateComment = () => {
-    
-    const [content, setContent] = useState('');
+    const [comment, setComment] = useState('');
     const [postID, setPostID] = useState('');
     const [availablePostIDs, setAvailablePostIDs] = useState([]);
 
     useEffect(() => {
-        // Fetch available post IDs from your API
         const fetchPostIDs = async () => {
             try {
-                const res = await axios.get("http://127.0.0.1:8000/api/admin/posts"); // Assuming this endpoint returns the post IDs
-                setAvailablePostIDs(res.data); // Assuming res.data is an array of post IDs
+                const token = localStorage.getItem('__token__');
+                console.log('Token:', token); // Log token để kiểm tra
+          
+                if (!token) {
+                  console.error('No token found');
+                  return;
+                }
+                const res = await axios.get("http://127.0.0.1:8000/api/admin/posts");
+                if (Array.isArray(res.data)) {
+                    setAvailablePostIDs(res.data);
+                } else {
+                    console.error("Unexpected response format:", res.data);
+                }
             } catch (error) {
                 console.error("Error fetching post IDs:", error);
             }
@@ -23,7 +32,7 @@ const CreateComment = () => {
     }, []);
 
     const handleCommentChange = (e) => {
-        setContent(e.target.value);
+        setComment(e.target.value);
     };
 
     const handlePostIDChange = (value) => {
@@ -34,7 +43,7 @@ const CreateComment = () => {
         e.preventDefault();
         try {
             const res = await axios.post("http://127.0.0.1:8000/api/admin/comments", {
-                comment: content,
+                comment: comment,
                 postID: postID
             });
             console.log('Response:', res.data);
@@ -47,7 +56,7 @@ const CreateComment = () => {
         <form onSubmit={handleSubmit}>
             <div>
                 <label>Comment</label>
-                <input type="text" value={content} onChange={handleCommentChange} />
+                <input type="text" value={comment} onChange={handleCommentChange} />
             </div>
             <div>
                 <Space wrap>
