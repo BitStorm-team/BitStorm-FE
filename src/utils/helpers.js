@@ -70,5 +70,7 @@ export function headerAPI() {
   return headers;
 }
 
-export const API_URL = process.env.API_URL || 'https://bitstormbe.zeabur.app/api'
+// export const API_URL = process.env.API_URL || 'http://localhost:8000'
+export const API_URL = 'http://localhost:8000/api'
+
 
