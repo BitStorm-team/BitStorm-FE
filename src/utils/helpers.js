@@ -29,22 +29,23 @@ export const decodeToken = () => {
   return jwtDecode(storedToken);
 };
 
-export const fetchAPI = async (endPoint, setData) => {
+export const fetchAPI = async (endPoint, setData, setLoading) => {
   const token = localStorage.getItem("__token__");
   const headers = headerAPI(token);
 
   try {
-    const response = await axios.get(endPoint, {
-      headers,
-    });
+    const response = await axios.get(endPoint, { headers });
     if (response.data.success) {
       setData(response.data.data.data);
       console.log(response.data.data.data);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
+  } finally {
+    if (setLoading) setLoading(false); // Ensure loading state is updated
   }
 };
+
 
 export const fetchAPIUserExpert = async (endPoint, setData) => {
   const headers = headerAPI();
@@ -52,9 +53,9 @@ export const fetchAPIUserExpert = async (endPoint, setData) => {
     const response = await axios.get(endPoint, {
       headers,
     });
-    if (response.data.success ) {
-        setData(response.data.data);
-        console.log(response.data.data);
+    if (response.data.success) {
+      setData(response.data.data);
+      console.log(response.data.data);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -71,6 +72,4 @@ export function headerAPI() {
 }
 
 // export const API_URL = process.env.API_URL || 'http://localhost:8000'
-export const API_URL = 'http://localhost:8000/api'
-
-
+export const API_URL = "http://localhost:8000/api";

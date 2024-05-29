@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
-import '../assets/styles/booking.css';
-import { API_URL, fetchAPI } from '../utils/helpers';
-import backupImage from '../assets/images/face-3.jpg';
+import "../assets/styles/booking.css";
+import { API_URL, fetchAPI } from "../utils/helpers";
+import backupImage from "../assets/images/face-3.jpg";
 
 const Booking = () => {
   const [bookings, setBookings] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
   const [expertInfoVisible, setExpertInfoVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const END_POINT = `${API_URL}/admin/bookings`;
-    fetchAPI(END_POINT, setBookings);
+    fetchAPI(END_POINT, setBookings, setLoading); // Pass setLoading as a parameter
   }, []);
 
   const handleUserInfoClick = (record) => {
@@ -83,6 +84,7 @@ const Booking = () => {
     <div style={{ overflowX: "auto" }}>
       <h1>Bookings</h1>
       <Table
+        loading={loading}
         dataSource={bookings}
         columns={columns}
         rowKey="id"
@@ -117,35 +119,39 @@ const Booking = () => {
         onCancel={() => setExpertInfoVisible(false)}
         footer={null}
       >
-        {selectedBooking && selectedBooking.calendar && selectedBooking.calendar.expert_detail && selectedBooking.calendar.expert_detail.user && (
-          <div>
-            <img
-              src={
-                selectedBooking.calendar.expert_detail.user.profile_picture ?? backupImage
-              }
-              alt=""
-            />
-            <p>Name: {selectedBooking.calendar.expert_detail.user.name}</p>
-            <p>Email: {selectedBooking.calendar.expert_detail.user.email}</p>
-            <p>
-              Experience: {selectedBooking.calendar.expert_detail.experience}
-            </p>
-            <p>
-              Average Rating:{" "}
-              {selectedBooking.calendar.expert_detail.average_rating}
-            </p>
-            <p>
-              Start Time:{" "}
-              {new Date(selectedBooking.calendar.start_time).toLocaleString()}
-            </p>
-            <p>
-              End Time:{" "}
-              {new Date(selectedBooking.calendar.end_time).toLocaleString()}
-            </p>
-            <p>Price: ${selectedBooking.calendar.price}</p>
-            <p>Description: {selectedBooking.calendar.describe}</p>
-          </div>
-        )}
+        {selectedBooking &&
+          selectedBooking.calendar &&
+          selectedBooking.calendar.expert_detail &&
+          selectedBooking.calendar.expert_detail.user && (
+            <div>
+              <img
+                src={
+                  selectedBooking.calendar.expert_detail.user.profile_picture ??
+                  backupImage
+                }
+                alt=""
+              />
+              <p>Name: {selectedBooking.calendar.expert_detail.user.name}</p>
+              <p>Email: {selectedBooking.calendar.expert_detail.user.email}</p>
+              <p>
+                Experience: {selectedBooking.calendar.expert_detail.experience}
+              </p>
+              <p>
+                Average Rating:{" "}
+                {selectedBooking.calendar.expert_detail.average_rating}
+              </p>
+              <p>
+                Start Time:{" "}
+                {new Date(selectedBooking.calendar.start_time).toLocaleString()}
+              </p>
+              <p>
+                End Time:{" "}
+                {new Date(selectedBooking.calendar.end_time).toLocaleString()}
+              </p>
+              <p>Price: ${selectedBooking.calendar.price}</p>
+              <p>Description: {selectedBooking.calendar.describe}</p>
+            </div>
+          )}
       </Modal>
     </div>
   );
