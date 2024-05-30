@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
-import '../assets/styles/booking.css';
-import { fetchAPI } from "../utils/helpers";
+import "../assets/styles/booking.css";
+import { API_URL, fetchAPI } from "../utils/helpers";
+import backupImage from "../assets/images/face-3.jpg";
+
 const Booking = () => {
   const [bookings, setBookings] = useState([]);
   const [userInfoVisible, setUserInfoVisible] = useState(false);
   const [expertInfoVisible, setExpertInfoVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const END_POINT = 'http://127.0.0.1:8000/api/admin/bookings';
-    fetchAPI(END_POINT,setBookings)
+    const END_POINT = `${API_URL}/admin/bookings`;
+    fetchAPI(END_POINT, setBookings, setLoading); // Pass setLoading as a parameter
   }, []);
 
   const handleUserInfoClick = (record) => {
@@ -48,14 +51,12 @@ const Booking = () => {
       dataIndex: "created_at",
       key: "created_at",
       render: (text) => new Date(text).toLocaleString(),
-
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       render: (text) => new Date(text).toLocaleString(),
-
     },
     {
       title: "User Information",
@@ -79,11 +80,11 @@ const Booking = () => {
     },
   ];
 
-
   return (
-    <div style={{ overflowX: "auto",  }}>
+    <div style={{ overflowX: "auto" }}>
       <h1>Bookings</h1>
       <Table
+        loading={loading}
         dataSource={bookings}
         columns={columns}
         rowKey="id"
@@ -97,9 +98,12 @@ const Booking = () => {
         onCancel={() => setUserInfoVisible(false)}
         footer={null}
       >
-        {selectedBooking && (
+        {selectedBooking && selectedBooking.user && (
           <div>
-            <img src={selectedBooking.user.profile_picture} alt="" />
+            <img
+              src={selectedBooking.user.profile_picture ?? backupImage}
+              alt=""
+            />
             <p>Name: {selectedBooking.user.name}</p>
             <p>Email: {selectedBooking.user.email}</p>
             <p>Address: {selectedBooking.user.address}</p>
@@ -117,15 +121,16 @@ const Booking = () => {
       >
         {selectedBooking &&
           selectedBooking.calendar &&
-          selectedBooking.calendar.expert_detail && (
+          selectedBooking.calendar.expert_detail &&
+          selectedBooking.calendar.expert_detail.user && (
             <div>
               <img
                 src={
-                  selectedBooking.calendar.expert_detail.user.profile_picture
+                  selectedBooking.calendar.expert_detail.user.profile_picture ??
+                  backupImage
                 }
                 alt=""
               />
-
               <p>Name: {selectedBooking.calendar.expert_detail.user.name}</p>
               <p>Email: {selectedBooking.calendar.expert_detail.user.email}</p>
               <p>

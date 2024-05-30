@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import "../assets/styles/contacts.css";
+import {API_URL} from '../utils/helpers'
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -15,13 +16,14 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [replyContent, setReplyContent] = useState("");
   const [deleteVisible, setDeleteVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchContacts = async () => {
       const token = localStorage.getItem("__token__");
 
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/contacts",
+          API_URL + "/admin/contacts",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -32,6 +34,7 @@ const Contacts = () => {
           setContacts(response.data.data.contacts);
           console.log("Contacts fetched successfully");
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching contacts:", error);
         message.error("Failed to fetch contacts");
@@ -61,7 +64,7 @@ const Contacts = () => {
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/admin/contacts/${record.id}`,
+        API_URL + `/admin/contacts/${record.id}`,
         { status: updatedStatus },
         {
           headers: {
@@ -91,7 +94,7 @@ const Contacts = () => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/admin/replyEmail`,
+        API_URL + `/admin/replyEmail`,
         { message: replyContent, email: selectedContact.email },
         {
           headers: {
@@ -121,7 +124,7 @@ const Contacts = () => {
     }
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/admin/contacts/${selectedContact.id}`,
+        API_URL + `/admin/contacts/${selectedContact.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -224,6 +227,7 @@ const Contacts = () => {
         columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
+        loading={loading}
       />
 
       {/* User Info Modal */}

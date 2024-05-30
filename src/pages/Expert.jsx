@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Avatar, Button, Modal, Popconfirm, Table, message } from "antd";
 import axios from "axios";
-import { fetchAPIUserExpert, headerAPI } from "../utils/helpers";
+import {API_URL, fetchAPIUserExpert, headerAPI} from '../utils/helpers'
 import "../assets/styles/expert.css";
 const Expert = () => {
   const [experts, setExperts] = useState([]);
@@ -11,7 +11,7 @@ const Expert = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const END_POINT = "http://127.0.0.1:8000/api/admin/experts";
+      const END_POINT = API_URL + "/admin/experts";
       await fetchAPIUserExpert(END_POINT, setExperts);
       setLoading(false);
     };
@@ -27,7 +27,7 @@ const Expert = () => {
   const handleUpdateExpert = async (record) => {
     const updatedStatus = record.status === 0 ? 1 : 0;
     try {
-      const END_POINT = `http://127.0.0.1:8000/api/admin/users/${record.id}`;
+      const END_POINT = API_URL + `/admin/users/${record.id}`;
       const updatedData = {
         status: updatedStatus,
       };
@@ -52,7 +52,7 @@ const Expert = () => {
 
   const handleDeleteExpert = async (record) => {
     try {
-      const END_POINT = `http://127.0.0.1:8000/api/admin/experts/${record.id}`;
+      const END_POINT = API_URL + `/admin/experts/${record.id}`;
       const headers = headerAPI();
       const response = await axios.delete(END_POINT, { headers });
       console.log(response.message);
@@ -89,9 +89,15 @@ const Expert = () => {
             xl: 60,
             xxl: 100,
           }}
-          src={profile_picture}
+          src={
+            profile_picture
+              ? profile_picture // Sử dụng profile_picture nếu tồn tại
+              : "https://img.freepik.com/free-vector/minimalist-geometric-judith-s-tiktok-profile-picture_742173-12131.jpg?w=740&t=st=1716713128~exp=1716713728~hmac=60ad3a963f72b82a7e9afe82b50fe50e29cba09c3e1990a6b126f39ac3450300"
+              // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
+          }
         />
       ),
+
     },
     {
       title: "Name",

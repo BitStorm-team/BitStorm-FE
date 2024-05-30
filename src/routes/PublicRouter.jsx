@@ -1,8 +1,12 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 
 const withPublicRoute = (props, index) => {
-  return <Route key={index} {...props} />;
+  const accessToken = localStorage.getItem('__token__');
+  if (!accessToken) {
+    return <Route key={index} {...props} />;
+  }
+  return <Route path="*" element={<Navigate to="/" />} />;
 };
 
 export default withPublicRoute;

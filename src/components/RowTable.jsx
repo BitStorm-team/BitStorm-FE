@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button, Modal } from "antd";
+import {API_URL} from '../utils/helpers'
 
 const RowTable = () => {
   const [bookings, setBookings] = useState([]);
@@ -14,7 +15,7 @@ const RowTable = () => {
 
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/bookings",
+          API_URL + "/admin/bookings",
           {
             headers: {
               Authorization: `Bearer ${token}`,

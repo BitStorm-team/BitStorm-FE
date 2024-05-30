@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Button, Modal, Popconfirm, message } from "antd";
+import { Table, Button, Modal, Popconfirm, message, Avatar } from "antd";
 import "../assets/styles/booking.css";
-import { headerAPI } from "../utils/helpers";
+import {API_URL, headerAPI} from '../utils/helpers'
 const User = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const token = localStorage.getItem("__token__");
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/users",
+          API_URL + "/admin/users",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -21,6 +23,7 @@ const User = () => {
         );
         if (response.data.success) {
           setUsers(response.data.data);
+          setLoading(false)
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -36,6 +39,30 @@ const User = () => {
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a.id - b.id,
+    },
+    {
+      title: "Avatar",
+      dataIndex: "profile_picture",
+      key: "profile_picture",
+      render: (profile_picture) => (
+        <Avatar
+          size={{
+            xs: 18,
+            sm: 20,
+            md: 30,
+            lg: 54,
+            xl: 60,
+            xxl: 100,
+          }}
+          src={
+            profile_picture
+              ? profile_picture // Sử dụng profile_picture nếu tồn tại
+              : "https://img.freepik.com/free-vector/isolated-young-handsome-man-set-different-poses-white-background-illustration_632498-649.jpg?w=740&t=st=1716713290~exp=1716713890~hmac=3528b47af850651d9c3bafab98d8a0bc83f46cc56d8c17cf4d626aff86848b7d"
+              // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
+          }
+        />
+      ),
+
     },
     {
       title: "Name",
@@ -67,9 +94,21 @@ const User = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (statusValue) => (
-        <span style={{ color: statusValue === 1 ? "blue" : "red" }}>
-          {statusValue === 1 ? "Active" : "Inactive"}
+      render: (status) => (
+        <span>
+          <span
+            style={{
+              display: "inline-block",
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              backgroundColor: status === 1 ? "green" : "red",
+              marginRight: "8px",
+            }}
+          ></span>
+          <span style={{ color: status === 1 ? "green" : "red" }}>
+            {status === 1 ? "active" : "inactive"}
+          </span>
         </span>
       ),
     },
@@ -108,7 +147,7 @@ const User = () => {
     const handleUpdateUserStatus = async (record) => {
       const updatedStatus = record.status === 0 ? 1 : 0;
       try {
-        const END_POINT = `http://127.0.0.1:8000/api/admin/experts/${record.id}`;
+        const END_POINT = API_URL + `/admin/experts/${record.id}`;
         const updatedData = {
           status: updatedStatus,
         };
@@ -130,11 +169,11 @@ const User = () => {
         message.error("Failed to update status");
       }
   };
-  
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>User List</h1>
-      <Table dataSource={users} columns={columns} rowKey="id" />
+      <Table dataSource={users} columns={columns} rowKey="id" loading={loading} />
         {selectedUser && (
           <div>
             <p>ID: {selectedUser.id}</p>
