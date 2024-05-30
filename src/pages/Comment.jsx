@@ -10,12 +10,17 @@ const Comment = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectOption, setSelectOption] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const [commentInfoVisible,setCommentInforVisible] = useState(false);
+  const [selectComment,setSelectedCommentInfor] = useState(null)
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-
+  const handleCommentInfo = (record) => {
+    setSelectedCommentInfor(record);
+    setCommentInforVisible(true)
+  }
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -263,7 +268,7 @@ const handleChangeSelect = (value) => {
             gap: "10px",
           }}
         >
-          {/* <Button onClick={() => handleUserInfoClick(record)}>View</Button> */}
+          <Button onClick={() => handleCommentInfo(record)}>View</Button>
           <Popconfirm
             key={record.id}
             title="Update status this Comment"
@@ -318,6 +323,31 @@ const handleChangeSelect = (value) => {
           <div style={{padding:10}}></div>
           <Button type="primary" htmlType="submit">Submit</Button>
         </form>
+      </Modal>
+      <Modal title="" visible={commentInfoVisible}
+      onCancel={() => setCommentInforVisible(false)} footer={null}>
+        {
+          selectComment && (
+            <div>
+              <h2>Details comments</h2>
+              <div>
+                <p>
+                  <strong>Post_id</strong> {selectComment.post_id}
+                </p>
+                <p>
+                  <strong>User_id</strong> {selectComment.user_id}
+                </p>
+                <p>
+                  <strong>Content</strong> {selectComment.content}
+                </p>
+                <p>
+                  <strong>Status</strong> {selectComment.status}
+                </p>
+              </div>
+            </div>
+          )
+        }
+
       </Modal>
       <h1>Comments</h1>
       <Table
