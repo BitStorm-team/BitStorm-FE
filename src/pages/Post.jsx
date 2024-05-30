@@ -24,7 +24,7 @@ const Post=()=>{
         );
         if(response.data.success){
           console.log("Post: ",response);
-          setPosts(response.data.data.data);
+          setPosts(response.data.data);
           setLoading(false);
         }
       }catch(error){
