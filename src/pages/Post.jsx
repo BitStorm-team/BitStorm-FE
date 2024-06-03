@@ -6,11 +6,13 @@ import { API_URL } from '../utils/helpers';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 6 },
+    lg:{ span:4}
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 14 },
+    sm: { span: 16 },
+    lg:{span:20}
   },
 };
 
@@ -19,16 +21,19 @@ const { Option } = Select;
 const Post = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalCreatePostOpen, setIsModalCreatePostOpen] = useState(false);
+  const [isModalReadDetailsOpen, setIsModalReadDetailsOpen] = useState(false);
+  const [postDetails, setPostDetails] = useState(null);
   const [users, setUsers] = useState([]);
   const [form] = Form.useForm();
 
   const showModal = () => {
-    setIsModalOpen(true);
+    setIsModalCreatePostOpen(true);
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    setIsModalCreatePostOpen(false);
+    
   };
 
   useEffect(() => {
@@ -128,7 +133,11 @@ const Post = () => {
       message.error('Failed to create post');
     }
   };
-
+  const handlePostInfoClick=(post)=>{
+    setIsModalReadDetailsOpen(true);
+    setPostDetails(post);
+    console.log('Post info clicked',post);
+  }
   const columns = [
     {
       title: "ID",
@@ -196,7 +205,7 @@ const Post = () => {
       key: "actions",
       render: (record) => (
         <div style={{ display: 'flex', gap: '10px' }}>
-          <Button>View</Button>
+          <Button onClick={()=>handlePostInfoClick(record)} >View</Button>
           <Button>Update</Button>
           <Button danger>Delete</Button>
         </div>
@@ -207,9 +216,10 @@ const Post = () => {
   return (
     <>
       <Button onClick={showModal}>Create Post</Button>
+      {/* modal create */}
       <Modal
         title="Create Post"
-        open={isModalOpen}
+        open={isModalCreatePostOpen}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
@@ -256,6 +266,43 @@ const Post = () => {
             </Select>
           </Form.Item>
         </Form>
+      </Modal>
+      {/* modal readDetails */}
+      <Modal
+        title="Post Information"
+        open={isModalReadDetailsOpen}
+        onCancel={()=>setIsModalReadDetailsOpen(false)}
+        footer={null}
+      >
+        {postDetails && (
+          <div>
+            <h2>User information</h2>
+            <p>
+              <strong>Name:</strong> {postDetails.user.name}
+            </p>
+            <p>
+              <strong>Email</strong>: {postDetails.user.email}
+            </p>
+            <p>
+              <strong>Address:</strong> {postDetails.user.address}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {postDetails.user.phone_number}
+            </p>
+            <h2>Content Information</h2>
+            <p>
+              <strong>Post ID:</strong> {postDetails.id}
+            </p>
+            <p>
+              <strong>Content:</strong> {postDetails.content}
+            </p>
+            <p>
+              <strong>Like count: </strong>
+              {postDetails.like_count}
+            </p>
+           
+          </div>
+        )}
       </Modal>
       <h1>POSTS</h1>
       <Table
