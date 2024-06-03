@@ -20,6 +20,7 @@ const { Option } = Select;
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
+  
   const [loading, setLoading] = useState(true);
   const [isModalCreatePostOpen, setIsModalCreatePostOpen] = useState(false);
   const [isModalReadDetailsOpen, setIsModalReadDetailsOpen] = useState(false);
@@ -138,6 +139,34 @@ const Post = () => {
     setPostDetails(post);
     console.log('Post info clicked',post);
   }
+  const handleStatusUpdateClick=async(record)=>{
+    const token = localStorage.getItem("__token__");
+    try {
+      const response = await axios.put(
+        API_URL + `/admin/posts/update/${record.id}`,
+        {},
+        {
+          headers: {
+            
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        console.log('Post updated successfully',response)
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === record.id ? { ...post, status:response.data.data.status}
+              : post
+          )
+        );
+        message.success(response.data.message || "Status updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      message.error( "Failed to update status");
+    }
+  }
   const columns = [
     {
       title: "ID",
@@ -178,12 +207,12 @@ const Post = () => {
               width: "8px",
               height: "8px",
               borderRadius: "50%",
-              backgroundColor: status === 1 ? "green" : "red",
+              backgroundColor: status === 1 || status === true ? "green" : "red",
               marginRight: "8px",
             }}
           ></span>
-          <span style={{ color: status === 1 ? "green" : "red" }}>
-            {status === 1 ? "active" : "inactive"}
+          <span style={{ color: status === 1 ||status === true ? "green" : "red" }}>
+            {status === 1 ||status === true ? "active" : "inactive"}
           </span>
         </span>
       ),
@@ -206,7 +235,7 @@ const Post = () => {
       render: (record) => (
         <div style={{ display: 'flex', gap: '10px' }}>
           <Button onClick={()=>handlePostInfoClick(record)} >View</Button>
-          <Button>Update</Button>
+          <Button onClick={()=>handleStatusUpdateClick(record)}>Update</Button>
           <Button danger>Delete</Button>
         </div>
       ),
