@@ -381,7 +381,7 @@ const Post = () => {
           </Button>,
         ]}
       >
-        <p>Are you sure you want to delete this contact?</p>
+        <p>Are you sure you want to delete this post?</p>
       </Modal>
       <h1>POSTS</h1>
       <Table
