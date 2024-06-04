@@ -24,6 +24,7 @@ const Post = () => {
   const [loading, setLoading] = useState(true);
   const [isModalCreatePostOpen, setIsModalCreatePostOpen] = useState(false);
   const [isModalReadDetailsOpen, setIsModalReadDetailsOpen] = useState(false);
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [postDetails, setPostDetails] = useState(null);
   const [users, setUsers] = useState([]);
   const [form] = Form.useForm();
@@ -167,6 +168,34 @@ const Post = () => {
       message.error( "Failed to update status");
     }
   }
+  const handleDeletePostClick=async(record) =>{
+    const token = localStorage.getItem("__token__");
+    try {
+      const response = await axios.delete(
+        API_URL + `/admin/posts/${record.id}`,
+        {},
+        {
+          headers: {
+            
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        console.log('Post Deleted successfully',response)
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === record.id ? { ...post, status:response.data.data.status}
+              : post
+          )
+        );
+        message.success(response.data.message || "Status updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      message.error( "Failed to update status");
+    }
+  }
   const columns = [
     {
       title: "ID",
@@ -236,7 +265,7 @@ const Post = () => {
         <div style={{ display: 'flex', gap: '10px' }}>
           <Button onClick={()=>handlePostInfoClick(record)} >View</Button>
           <Button onClick={()=>handleStatusUpdateClick(record)}>Update</Button>
-          <Button danger>Delete</Button>
+          <Button danger onClick={()=>setIsModalDeleteOpen(true)}>Delete</Button>
         </div>
       ),
     },
@@ -332,6 +361,27 @@ const Post = () => {
            
           </div>
         )}
+      </Modal>
+       {/* Delete Confirmation Modal */}
+       <Modal
+        title="Confirm Delete Post"
+        open={isModalDeleteOpen}
+        onCancel={() => setIsModalDeleteOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsModalDeleteOpen(false)}>
+            Cancel
+          </Button>,
+          <Button
+            key="delete"
+            type="primary"
+            danger
+            onClick={handleDeletePostClick}
+          >
+            Delete
+          </Button>,
+        ]}
+      >
+        <p>Are you sure you want to delete this contact?</p>
       </Modal>
       <h1>POSTS</h1>
       <Table
