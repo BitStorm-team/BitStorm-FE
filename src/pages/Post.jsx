@@ -140,6 +140,11 @@ const Post = () => {
     setPostDetails(post);
     console.log('Post info clicked',post);
   }
+  const handleDeletePostClick=(record)=>{
+
+    setIsModalDeleteOpen(true);
+    setPostDetails(record);
+  }
   const handleStatusUpdateClick=async(record)=>{
     const token = localStorage.getItem("__token__");
     try {
@@ -168,12 +173,12 @@ const Post = () => {
       message.error( "Failed to update status");
     }
   }
-  const handleDeletePostClick=async(record) =>{
+  const handleDeletePost=async function(){
     const token = localStorage.getItem("__token__");
+    console.log(postDetails);
     try {
       const response = await axios.delete(
-        API_URL + `/admin/posts/${record.id}`,
-        {},
+        API_URL + `/admin/posts/${postDetails.id}`,
         {
           headers: {
             
@@ -184,16 +189,16 @@ const Post = () => {
       if (response.data.success) {
         console.log('Post Deleted successfully',response)
         setPosts((prevPosts) =>
-          prevPosts.map((post) =>
-            post.id === record.id ? { ...post, status:response.data.data.status}
-              : post
+          prevPosts.filter((post) =>
+            post.id !== postDetails.id 
           )
         );
-        message.success(response.data.message || "Status updated successfully");
+        message.success(response.data.message || "Delete post successfully");
+        setIsModalDeleteOpen(false);
       }
     } catch (error) {
-      console.error("Error updating status:", error);
-      message.error( "Failed to update status");
+      console.error("Error delete post:", error);
+      message.error( "Failed to delete post");
     }
   }
   const columns = [
@@ -265,7 +270,7 @@ const Post = () => {
         <div style={{ display: 'flex', gap: '10px' }}>
           <Button onClick={()=>handlePostInfoClick(record)} >View</Button>
           <Button onClick={()=>handleStatusUpdateClick(record)}>Update</Button>
-          <Button danger onClick={()=>setIsModalDeleteOpen(true)}>Delete</Button>
+          <Button danger onClick={()=>handleDeletePostClick(record)}>Delete</Button>
         </div>
       ),
     },
@@ -375,7 +380,7 @@ const Post = () => {
             key="delete"
             type="primary"
             danger
-            onClick={handleDeletePostClick}
+            onClick={handleDeletePost}
           >
             Delete
           </Button>,
