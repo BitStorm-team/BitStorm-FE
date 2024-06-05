@@ -58,11 +58,10 @@ const User = () => {
             profile_picture
               ? profile_picture // Sử dụng profile_picture nếu tồn tại
               : "https://img.freepik.com/free-vector/isolated-young-handsome-man-set-different-poses-white-background-illustration_632498-649.jpg?w=740&t=st=1716713290~exp=1716713890~hmac=3528b47af850651d9c3bafab98d8a0bc83f46cc56d8c17cf4d626aff86848b7d"
-              // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
+            // Sử dụng hình ảnh mặc định nếu profile_picture không tồn tại
           }
         />
       ),
-
     },
     {
       title: "Name",
@@ -139,6 +138,16 @@ const User = () => {
               Update
             </Button>
           </Popconfirm>
+          <Popconfirm
+            key={record.id}
+            title="Delete this User"
+            description="Are you sure to delete this User?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteUser(record)}
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </div>
       ),
     },
@@ -147,7 +156,7 @@ const User = () => {
     const handleUpdateUserStatus = async (record) => {
       const updatedStatus = record.status === 0 ? 1 : 0;
       try {
-        const END_POINT = API_URL + `/admin/experts/${record.id}`;
+        const END_POINT = API_URL + `/admin/users/${record.id}`;
         const updatedData = {
           status: updatedStatus,
         };
@@ -169,6 +178,25 @@ const User = () => {
         message.error("Failed to update status");
       }
   };
+
+    const handleDeleteUser = async (record) => {
+      try {
+        const END_POINT = API_URL + `/admin/users/${record.id}`;
+        const headers = headerAPI();
+        const response = await axios.delete(END_POINT, { headers });
+        console.log(response.message);
+        if (response.data.success) {
+          setUsers((prevUsers) =>
+            prevUsers.filter((user) => user.id !== record.id)
+          );
+          message.success("User deleted successfully");
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        message.error("Failed to delete user");
+      }
+    };
+
 
   return (
     <div style={{ padding: "20px" }}>

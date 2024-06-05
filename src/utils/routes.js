@@ -59,4 +59,5 @@ export const privateRoutes = [
     element: <LayoutAdmin main={<Booking />} />,
     exact: true,
   },
+  
 ];
