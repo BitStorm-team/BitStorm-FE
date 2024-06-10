@@ -197,7 +197,7 @@ const Post = () => {
         setIsModalDeleteOpen(false);
       }
     } catch (error) {
-      console.error("Error delete post:", error);
+      console.error("Error delete post:", error); 
       message.error( "Failed to delete post");
     }
   }
