@@ -13,12 +13,12 @@ function LineChart({users, bookings}) {
     series: [
       {
         name: "Users",
-        data: users.map((item) => item.count),
+        data: bookings.map((item) => item.count),
         offsetY: 0,
       },
       {
         name: "Bookings",
-        data: bookings.map((item) => item.count),
+        data: users.map((item) => item.count),
         offsetY: 0,
       },
     ],
@@ -88,10 +88,7 @@ function LineChart({users, bookings}) {
     <>
       <div className="linechart">
         <div>
-          <Title level={5}>Active Users</Title>
-          <Paragraph className="lastweek">
-            than last week <span className="bnb2">+30%</span>
-          </Paragraph>
+          <Title level={5}>Active Users And Bookings</Title>
         </div>
         <div className="sales">
           <ul>

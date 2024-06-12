@@ -94,13 +94,10 @@ function EChart({ data }) {
       <div className="chart-vistior">
         <Title level={5}>Active Users</Title>
         <Paragraph className="lastweek">
-          than last week <span className="bnb2">+30%</span>
-        </Paragraph>
-        <Paragraph className="lastweek">
           We have created multiple options for you to put together and customise
           into pixel perfect pages.
         </Paragraph>
-        
+
       </div>
     </>
   );

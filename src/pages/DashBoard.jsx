@@ -10,6 +10,11 @@ import { set } from "lodash";
 function Dashboard() {
   const { Title } = Typography;
   const [posts, setPosts] = useState(0);
+  const [comments, setComments] = useState(0);
+  const [contact, setContacts] = useState(0);
+  const [calendars, setCalendars] = useState(0);
+  const [bookedCelendars, setBookedCelendars] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [users, setUsers] = useState(0);
   const [bookings, setBookings] = useState(0);
   const [experts, setExperts] = useState([]);
@@ -25,7 +30,83 @@ function Dashboard() {
     fetchExperts(token);
     fetchDailyUserStats(token);
     fetchDailyBookingStats(token);
+    fetchComments(token);
+    fetchContacts(token);
+    fetchCalendars(token);
   }, []);
+
+  // calendars
+  const fetchCalendars = async (token) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/allCalendars`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await res.json();
+      const calendars = data.data;
+      setCalendars(calendars.length);
+    } catch (error) {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    }
+  };
+
+  // comments
+  const fetchComments = async (token) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/comments`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await res.json();
+      const comments = data.data.data;
+      if (Array.isArray(comments)) {
+        setLoading(false);
+        setComments(comments.length);
+      }
+    } catch (error) {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    }
+  };
+
+  // contact
+  const fetchContacts = async (token) => {
+    try {
+      const response = await axios.get(API_URL + "/admin/contacts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        setContacts(response.data.data.contacts.length);
+        console.log("Contacts fetched successfully");
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
   // posts
   const fetchPosts = async (token) => {
@@ -64,21 +145,32 @@ function Dashboard() {
     }
   };
   // bookings
+
   const fetchBookings = async (token) => {
     const headers = headerAPI(token);
     const END_POINT = `${API_URL}/admin/bookings`;
     try {
       const response = await axios.get(END_POINT, { headers });
-      if (response.data.success) {
-        setBookings(response.data.data.length);
-        console.log("bookings" + response.data.data.length);
+      const results = response.data.data;
+      setBookings(results.length);
+
+      let total = 0;
+      for (const booking of results) {
+        total += booking.calendar.price;
+        // Update total price state inside the loop
+        setTotalPrice((prevTotal) => prevTotal + booking.calendar.price);
       }
+
+      console.log("Total price:", total); // Log total price
+
+      setBookedCelendars(results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       if (setLoading) setLoading(false); // Ensure loading state is updated
     }
   };
+
 
   //experts
   const fetchExperts = async (token) => {
@@ -127,6 +219,9 @@ function Dashboard() {
       console.error("Error fetching daily booking stats:", error);
     }
   };
+
+  console.log(bookings + "bookings");
+  console.log(totalPrice + " total");
 
   const dollor = (
     <svg
@@ -223,6 +318,12 @@ function Dashboard() {
       bnb: "bnb2",
     },
     {
+      today: "All comments ",
+      title: comments ?? "0",
+      icon: dollor,
+      bnb: "bnb2",
+    },
+    {
       today: "All Users",
       title: users ?? "0",
       icon: profile,
@@ -238,6 +339,24 @@ function Dashboard() {
       today: "New Bookings ",
       title: bookings ?? "0",
       icon: cart,
+      bnb: "bnb2",
+    },
+    {
+      today: "Total price ",
+      title: totalPrice ?? "0",
+      icon: dollor,
+      bnb: "bnb2",
+    },
+    {
+      today: "All calendars ",
+      title: calendars ?? "0",
+      icon: dollor,
+      bnb: "bnb2",
+    },
+    {
+      today: "All contacts ",
+      title: contact ?? "0",
+      icon: dollor,
       bnb: "bnb2",
     },
   ];
@@ -284,7 +403,6 @@ function Dashboard() {
               <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
                 <Card bordered={false} className="criclebox h-full">
                   <Echart data={dailyUserStats} />
-
                 </Card>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
