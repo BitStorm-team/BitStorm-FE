@@ -12,6 +12,8 @@ const Comment = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [commentInfoVisible,setCommentInforVisible] = useState(false);
   const [selectComment,setSelectedCommentInfor] = useState(null)
+  const [loading, setLoading] = useState(true);
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -84,6 +86,7 @@ const Comment = () => {
       const data = await res.json();
       const comments = data.data.data;
       if (Array.isArray(comments)) {
+        setLoading(false);
         setComments(comments);
         setPagination({
           ...pagination,
@@ -286,7 +289,7 @@ const handleChangeSelect = (value) => {
               Update
             </Button>
           </Popconfirm>
-          
+
           <Popconfirm
             key={record.id}
             title="Delete this Comments"
@@ -357,6 +360,7 @@ const handleChangeSelect = (value) => {
         rowKey="id"
         pagination={pagination}
         onChange={handleTableChange}
+        loading={loading}
       />
     </div>
   );
