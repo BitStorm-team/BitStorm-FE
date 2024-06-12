@@ -6,7 +6,15 @@ import "../assets/styles/main.css";
 import { API_URL, headerAPI } from "../utils/helpers";
 import axios from "axios";
 import { set } from "lodash";
-
+import postIcon from "../assets/images/posts.png";
+import contactIcon from "../assets/images/contact.png";
+import calendarIcon from "../assets/images/calendar.png";
+import commentIcon from "../assets/images/comment.png";
+import experttIcon from "../assets/images/experts.png";
+import userIcon from "../assets/images/ussers.png";
+import cartIcon from "../assets/images/bookings.svg";
+import dollortIcon from "../assets/images/dollor.png";
+import CalendarLarge from "../components/layout/CalendarLarge";
 function Dashboard() {
   const { Title } = Typography;
   const [posts, setPosts] = useState(0);
@@ -171,7 +179,6 @@ function Dashboard() {
     }
   };
 
-
   //experts
   const fetchExperts = async (token) => {
     const headers = headerAPI(token);
@@ -314,49 +321,49 @@ function Dashboard() {
     {
       today: "All Posts",
       title: posts ?? "0",
-      icon: dollor,
+      icon: postIcon,
       bnb: "bnb2",
     },
     {
       today: "All comments ",
       title: comments ?? "0",
-      icon: dollor,
+      icon: dollortIcon,
       bnb: "bnb2",
     },
     {
       today: "All Users",
       title: users ?? "0",
-      icon: profile,
+      icon: userIcon,
       bnb: "bnb2",
     },
     {
       today: "All Experts",
       title: experts ?? "0",
-      icon: heart,
+      icon: experttIcon,
       bnb: "redtext",
     },
     {
       today: "New Bookings ",
       title: bookings ?? "0",
-      icon: cart,
+      icon: cartIcon,
       bnb: "bnb2",
     },
     {
       today: "Total price ",
-      title: totalPrice ?? "0",
-      icon: dollor,
+      title: totalPrice + " vnd",
+      icon: dollortIcon,
       bnb: "bnb2",
     },
     {
       today: "All calendars ",
       title: calendars ?? "0",
-      icon: dollor,
+      icon: calendarIcon,
       bnb: "bnb2",
     },
     {
       today: "All contacts ",
       title: contact ?? "0",
-      icon: dollor,
+      icon: contactIcon,
       bnb: "bnb2",
     },
   ];
@@ -365,7 +372,14 @@ function Dashboard() {
     <>
       <div className="layout-content">
         {loading ? (
-          <Spin tip="Loading..." />
+          <div style={{
+            display : 'flex',
+            justifyContent : 'center',
+            alignItems : 'center',
+            height : '70vh',
+          }}>
+            <Spin  tip="Loading..." />
+          </div>
         ) : (
           <>
             <Row className="rowgap-vbox" gutter={[24, 0]}>
@@ -390,7 +404,9 @@ function Dashboard() {
                           </Title>
                         </Col>
                         <Col xs={6}>
-                          <div className="icon-box">{c.icon}</div>
+                          <div className="icon-box">
+                            <img src={c.icon} alt="" />
+                          </div>
                         </Col>
                       </Row>
                     </div>
@@ -410,6 +426,9 @@ function Dashboard() {
                   <LineChart users={dailyUserStats} bookings={bookingStats} />
                 </Card>
               </Col>
+            </Row>
+            <Row>
+              <CalendarLarge />
             </Row>
           </>
         )}

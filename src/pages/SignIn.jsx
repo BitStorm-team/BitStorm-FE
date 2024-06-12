@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout, Button, Row, Col, Typography, Form, Input, message } from "antd";
 import axios from "axios";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../assets/images/signinimage5.jpg";
 import {API_URL, setStorage} from '../utils/helpers'
 
 const { Title } = Typography;
@@ -64,10 +64,13 @@ const SignIn = () => {
 
   return (
     <>
-      <Layout className="layout-default layout-signin">
+      <Layout className="layout-default layout-signin" style={{
+        height : '100vh',
+      }}>
         <Content className="signin">
           <Row gutter={[24, 0]} justify="space-around">
             <Col
+            className="form-group-main"
               xs={{ span: 24, offset: 0 }}
               lg={{ span: 6, offset: 2 }}
               md={{ span: 12 }}
@@ -117,22 +120,17 @@ const SignIn = () => {
                     SIGN IN
                   </Button>
                 </Form.Item>
-                <p className="font-semibold text-muted">
-                  Don't have an account?{" "}
-                  <Link to="/signup" className="text-dark font-bold">
-                    Sign Up
-                  </Link>
-                </p>
+
               </Form>
             </Col>
             <Col
               className="sign-img"
-              style={{ padding: 12 }}
+              style={{ padding: 12, width : '90vw', height : '90vh' }}
               xs={{ span: 24 }}
               lg={{ span: 12 }}
               md={{ span: 12 }}
             >
-              <img src={signinbg} alt="" />
+              <img style={{height : '80vh'}} src={signinbg} alt="" />
             </Col>
           </Row>
         </Content>

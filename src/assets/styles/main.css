@@ -967,6 +967,9 @@ button.ant-btn.bell strong {
   color: #fff;
   font-size: 24px;
 }
+.icon-box {
+   width: 50px;
+}
 
 .listpage {
   padding-top: 15px;
@@ -3035,4 +3038,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   svg
   path {
   fill: #8c8c8c;
+}
+.form-group-main{
+   padding: 60px;
 }
