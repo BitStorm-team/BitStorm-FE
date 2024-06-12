@@ -14,11 +14,23 @@ import {
   LoginOutlined,
   PayCircleOutlined,
   LogoutOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme, Input, Avatar, Badge, Space } from "antd";
+import {
+  Button,
+  Layout,
+  Menu,
+  theme,
+  Input,
+  Avatar,
+  Badge,
+  Space,
+  Modal,
+} from "antd";
 import axios from "axios";
-import {API_URL} from '../../utils/helpers'
+import { API_URL } from "../../utils/helpers";
 import DemoAvatar from "../user/DemoAvatar";
+import CustomCalendar from "./calendar";
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
@@ -38,8 +50,19 @@ const LayoutAdmin = ({ main }) => {
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  // const [userData, setUserData] = useState(userProfile.data);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -62,7 +85,6 @@ const LayoutAdmin = ({ main }) => {
     if (userInfo && userInfo.sub) {
       getUser();
     }
-
   }, [userInfo]); // Add userInfo as a dependency to re-run the effect when userInfo changes
 
   useEffect(() => {
@@ -74,12 +96,24 @@ const LayoutAdmin = ({ main }) => {
     }
   }, []);
 
-  console.log((userProfile))
+  console.log(userProfile);
   const handleLogout = () => {
-    console.log("User logged out");
-    localStorage.removeItem("__token__");
-    localStorage.removeItem("expires_in");
-    window.location.href = "/signin";
+    Modal.confirm({
+      title: "Are you sure you want to log out?",
+      content: "Logging out will end your current session.",
+      okText: "Yes, log me out",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk() {
+        console.log("User logged out");
+        localStorage.removeItem("__token__");
+        localStorage.removeItem("expires_in");
+        window.location.href = "/signin";
+      },
+      onCancel() {
+        console.log("Logout cancelled");
+      },
+    });
   };
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -121,28 +155,12 @@ const LayoutAdmin = ({ main }) => {
       icon: <PayCircleOutlined />,
       label: <Link to="/booking">Booking</Link>,
     },
-  ];
-
-  if (token) {
-    menuItems.push({
-      key: "7",
+    {
+      key: "8",
       icon: <LogoutOutlined />,
       label: <span onClick={handleLogout}>Logout</span>,
-    });
-  } else {
-    menuItems.push(
-      {
-        key: "8",
-        icon: <LoginOutlined />,
-        label: <Link to="/signin">Sign In</Link>,
-      },
-      {
-        key: "9",
-        icon: <LogoutOutlined />,
-        label: <Link to="/signup">Sign Up</Link>,
-      }
-    );
-  }
+    },
+  ];
 
   return (
     <Layout
@@ -211,7 +229,11 @@ const LayoutAdmin = ({ main }) => {
                   {userProfile && userProfile.data.profile_picture ? (
                     <Avatar
                       shape="square"
-                      src={userProfile.data.profile_picture ? userProfile.data.profile_picture : DemoAvatar()}
+                      src={
+                        userProfile.data.profile_picture
+                          ? userProfile.data.profile_picture
+                          : DemoAvatar()
+                      }
                     />
                   ) : (
                     <Avatar shape="square" icon={<UserOutlined />} />
@@ -227,17 +249,31 @@ const LayoutAdmin = ({ main }) => {
               <h1>You have to login</h1>
             )}
           </div>
-          <Search
+          <div
             style={{
-              backgroundColor: "#1677ff",
-              borderRadius: "10px",
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
             }}
-            placeholder="input search text"
-            allowClear
-            enterButton="Search"
-            size="large"
-            onSearch={onSearch}
-          />
+          >
+            <Button type="primary" onClick={showModal}>
+              <CalendarOutlined />
+            </Button>
+            <Modal
+              title="Calendar"
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              footer={[
+
+                <Button key="submit" type="primary" onClick={handleOk}>
+                  OK
+                </Button>,
+              ]}
+            >
+              <CustomCalendar />
+            </Modal>
+          </div>
         </Header>
         <Content
           style={{
