@@ -20,7 +20,6 @@ const { Option } = Select;
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [isModalCreatePostOpen, setIsModalCreatePostOpen] = useState(false);
   const [isModalReadDetailsOpen, setIsModalReadDetailsOpen] = useState(false);
@@ -191,14 +190,14 @@ const Post = () => {
         console.log('Post Deleted successfully',response)
         setPosts((prevPosts) =>
           prevPosts.filter((post) =>
-            post.id !== postDetails.id 
+            post.id !== postDetails.id
           )
         );
         message.success(response.data.message || "Delete post successfully");
         setIsModalDeleteOpen(false);
       }
     } catch (error) {
-      console.error("Error delete post:", error); 
+      console.error("Error delete post:", error);
       message.error( "Failed to delete post");
     }
   }
