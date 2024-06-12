@@ -5,6 +5,7 @@ import LineChart from "../components/chart/LineChart";
 import "../assets/styles/main.css";
 import { API_URL, headerAPI } from "../utils/helpers";
 import axios from "axios";
+import { set } from "lodash";
 
 function Dashboard() {
   const { Title } = Typography;
@@ -12,8 +13,9 @@ function Dashboard() {
   const [users, setUsers] = useState(0);
   const [bookings, setBookings] = useState(0);
   const [experts, setExperts] = useState([]);
-
+  const [dailyUserStats, setDailyUserStats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [bookingStats, setBookingStats] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("__token__");
@@ -21,6 +23,8 @@ function Dashboard() {
     fetchUsers(token);
     fetchBookings(token);
     fetchExperts(token);
+    fetchDailyUserStats(token);
+    fetchDailyBookingStats(token);
   }, []);
 
   // posts
@@ -46,17 +50,14 @@ function Dashboard() {
   // users
   const fetchUsers = async (token) => {
     try {
-      const response = await axios.get(
-        API_URL + "/admin/users",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(API_URL + "/admin/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.success) {
         setUsers(response.data.data.length);
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -70,14 +71,14 @@ function Dashboard() {
       const response = await axios.get(END_POINT, { headers });
       if (response.data.success) {
         setBookings(response.data.data.length);
-        console.log('bookings' + response.data.data.length);
+        console.log("bookings" + response.data.data.length);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       if (setLoading) setLoading(false); // Ensure loading state is updated
     }
-  }
+  };
 
   //experts
   const fetchExperts = async (token) => {
@@ -87,14 +88,46 @@ function Dashboard() {
       const response = await axios.get(END_POINT, { headers });
       if (response.data.success) {
         setExperts(response.data.data.length);
-        console.log('expert' + response.data.data.length);
+        console.log("expert" + response.data.data.length);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       if (setLoading) setLoading(false); // Ensure loading state is updated
     }
-  }
+  };
+
+  const fetchDailyUserStats = async (token) => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        console.log("stats" + response.data.data);
+        setDailyUserStats(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching daily user stats:", error);
+    }
+  };
+  const fetchDailyBookingStats = async (token) => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/bookings-stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        console.log("stats" + response.data.data);
+        setBookingStats(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching daily booking stats:", error);
+    }
+  };
+
   const dollor = (
     <svg
       width="22"
@@ -185,25 +218,25 @@ function Dashboard() {
   const count = [
     {
       today: "All Posts",
-      title: posts ?? "0" ,
+      title: posts ?? "0",
       icon: dollor,
       bnb: "bnb2",
     },
     {
       today: "All Users",
-      title: users ?? '0',
+      title: users ?? "0",
       icon: profile,
       bnb: "bnb2",
     },
     {
       today: "All Experts",
-      title: experts ?? '0',
+      title: experts ?? "0",
       icon: heart,
       bnb: "redtext",
     },
     {
       today: "New Bookings ",
-      title: bookings ?? '0',
+      title: bookings ?? "0",
       icon: cart,
       bnb: "bnb2",
     },
@@ -250,12 +283,13 @@ function Dashboard() {
             <Row gutter={[24, 0]}>
               <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
                 <Card bordered={false} className="criclebox h-full">
-                  <Echart />
+                  <Echart data={dailyUserStats} />
+
                 </Card>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
                 <Card bordered={false} className="criclebox h-full">
-                  <LineChart />
+                  <LineChart users={dailyUserStats} bookings={bookingStats} />
                 </Card>
               </Col>
             </Row>

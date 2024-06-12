@@ -1,8 +1,8 @@
 const eChart = {
   series: [
     {
-      name: "Sales",
-      data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
+      name: "Users",
+      data: [450, 200, 100, 220, 100, 1, 230, 1 , 1],
       color: "#fff",
     },
   ],
@@ -96,7 +96,7 @@ const eChart = {
     tooltip: {
       y: {
         formatter: function (val) {
-          return "$ " + val + " thousands";
+          return  val + " Users";
         },
       },
     },
