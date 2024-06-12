@@ -88,7 +88,6 @@ const Booking = () => {
         dataSource={bookings}
         columns={columns}
         rowKey="id"
-        pagination={{ pageSize: 10 }}
       />
 
       {/* User Info Modal */}

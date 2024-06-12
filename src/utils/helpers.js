@@ -36,8 +36,8 @@ export const fetchAPI = async (endPoint, setData, setLoading) => {
   try {
     const response = await axios.get(endPoint, { headers });
     if (response.data.success) {
-      setData(response.data.data.data);
-      console.log(response.data.data.data);
+      setData(response.data.data);
+      console.log(response.data.data);
     }
   } catch (error) {
     console.error("Error fetching data:", error);
