@@ -1,28 +1,38 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Modal, Input, Space, Select, message,Popconfirm} from "antd";
-import { API_URL, headerAPI } from '../utils/helpers';
-import {jwtDecode} from "jwt-decode";
+import {
+  Table,
+  Button,
+  Modal,
+  Input,
+  Space,
+  Select,
+  message,
+  Popconfirm,
+} from "antd";
+import { API_URL, headerAPI } from "../utils/helpers";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+
 const Comment = () => {
   const [comments, setComments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postIDs, setPostIDs] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [selectOption, setSelectOption] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [commentInfoVisible,setCommentInforVisible] = useState(false);
-  const [selectComment,setSelectedCommentInfor] = useState(null)
-  const [loading, setLoading] = useState(true);
-
+  const [commentInfoVisible, setCommentInfoVisible] = useState(false);
+  const [selectComment, setSelectedCommentInfo] = useState(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
   const handleCommentInfo = (record) => {
-    setSelectedCommentInfor(record);
-    setCommentInforVisible(true)
-  }
+    setSelectedCommentInfo(record);
+    setCommentInfoVisible(true);
+  };
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -30,73 +40,81 @@ const Comment = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   const handleUpdateComment = async (record) => {
     const updateStatus = record.status === 0 ? 1 : 0;
     try {
-      const END_POINT = API_URL + `/admin/comments/${record.id}`;
-      const updatedData = {
-        status: updateStatus,
-      }
+      const END_POINT = `${API_URL}/admin/comments/${record.id}`;
+      const updatedData = { status: updateStatus };
       const headers = headerAPI();
       const response = await axios.put(END_POINT, updatedData, { headers });
-      console.log("Updated comment", response.data);
-      if(response.data.success) {
-        setComments((prev) => prev.map((comments) => comments.id ===record.id ? {...comments,status:updateStatus}:comments))
+
+      if (response.data.success) {
+        setComments((prev) =>
+          prev.map((comment) =>
+            comment.id === record.id
+              ? { ...comment, status: updateStatus }
+              : comment
+          )
+        );
+        message.success("Status updated successfully");
       }
-      message.success("Status updated successfully");
-    }
-    catch (error) {
-      console.error("Error updating",error);
+    } catch (error) {
+      console.error("Error updating", error);
       message.error("Failed to update status");
     }
-  }
+  };
+
   const ellipsisStyle = {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: '200px'
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "200px",
   };
 
   const ColumnContent = ({ content }) => (
-    <div style={ellipsisStyle}>
-      {content}
-    </div>
+    <div style={ellipsisStyle}>{content}</div>
   );
 
   const fetchComments = async (page = 1, pageSize = 10) => {
-    const token = localStorage.getItem('__token__');
+    const token = localStorage.getItem("__token__");
     if (!token) {
-      console.error('No token found');
+      console.error("No token found");
       return;
     }
 
     try {
-      const res = await fetch(`${API_URL}/admin/comments?page=${page}&pageSize=${pageSize}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `${API_URL}/admin/comments?page=${page}&pageSize=${pageSize}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await res.json();
       const comments = data.data.data;
       if (Array.isArray(comments)) {
-        setLoading(false);
         setComments(comments);
-        setPagination({
-          ...pagination,
+        setPagination((prev) => ({
+          ...prev,
           total: data.data.total,
           current: page,
           pageSize: pageSize,
-        });
+        }));
       }
     } catch (error) {
-      console.error('There has been a problem with your fetch operation:', error);
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
     }
   };
 
@@ -109,39 +127,40 @@ const Comment = () => {
   };
 
   const handleChange = async () => {
-    const token = localStorage.getItem('__token__');
+    const token = localStorage.getItem("__token__");
     if (!token) {
-      console.error('No token found');
+      console.error("No token found");
       return;
     }
 
     try {
       const res = await fetch(`${API_URL}/admin/posts`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await res.json();
       const posts = data.data;
       if (Array.isArray(posts)) {
-        const options = posts.map((post, index) => ({
-          key: index,
+        const options = posts.map((post) => ({
+          key: post.id,
           value: post.id,
           label: post.content,
         }));
         setPostIDs(options);
       } else {
-        console.error('Expected an array but got:', posts);
+        console.error("Expected an array but got:", posts);
         setPostIDs([]);
       }
     } catch (error) {
-      console.error('Error during fetch:', error);
+      console.error("Error during fetch:", error);
     }
   };
-const handleChangeSelect = (value) => {
+
+  const handleChangeSelect = (value) => {
     setSelectOption(value);
   };
 
@@ -151,54 +170,62 @@ const handleChangeSelect = (value) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = localStorage.getItem('__token__');
+    const token = localStorage.getItem("__token__");
     if (!token) {
-      console.error('No token found');
+      console.error("No token found");
       return;
     }
+
     const decodedToken = jwtDecode(token);
     const currentUser = decodedToken.sub;
     const postData = {
       user_id: currentUser,
       content: inputValue,
       post_id: selectOption,
-      status: 1
+      status: 1,
     };
+
     try {
       const res = await fetch(`${API_URL}/admin/comments`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(postData),
       });
 
-      if (res.ok) {
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
         const result = await res.json();
-        message.success('Submission successful');
-        setInputValue('');
-        setSelectOption('');
-        setIsModalOpen(false);
-        fetchComments(pagination.current, pagination.pageSize); // Refresh comments
+        if (res.ok) {
+          message.success("Submission successful");
+          setInputValue("");
+          setSelectOption("");
+          setIsModalOpen(false);
+        } else {
+          message.error("Submission failed");
+          console.error("Failed to submit:", res.statusText, result);
+        }
       } else {
-        const errorData = await res.json();
-        message.error('Submission failed');
-        console.error('Failed to submit:', res.statusText, errorData);
+        const errorText = await res.text();
+        message.error("Submission failed: Received non-JSON response");
+        console.error("Failed to submit:", res.statusText, errorText);
       }
     } catch (error) {
-      console.error('Error during submission:', error);
+      console.error("Error during submission:", error);
     }
   };
-  const handleDeleteComments = async (record) =>{
+
+  const handleDeleteComments = async (record) => {
     try {
-      const END_POINT = API_URL + `/admin/comments/${record.id}`;
+      const END_POINT = `${API_URL}/admin/comments/${record.id}`;
       const headers = headerAPI();
       const response = await axios.delete(END_POINT, { headers });
-      console.log(response.message);
+
       if (response.data.success) {
         setComments((prev) =>
-          prev.filter((comments) => comments.id !== record.id)
+          prev.filter((comment) => comment.id !== record.id)
         );
         message.success("Comment deleted successfully");
       }
@@ -206,30 +233,29 @@ const handleChangeSelect = (value) => {
       console.error("Error deleting comment:", error);
       message.error("Failed to delete comment");
     }
-  }
+  };
+
   const columns = [
     {
-      title: 'User ID',
-      dataIndex: 'user_id',
-      key: 'user_id',
+      title: "User ID",
+      dataIndex: "user_id",
+      key: "user_id",
     },
     {
-      title: 'Post Id',
-      dataIndex: 'post_id',
-      key: 'post_id',
+      title: "Post Id",
+      dataIndex: "post_id",
+      key: "post_id",
     },
     {
-      title: 'Content',
-      dataIndex: 'content',
-      key: 'content',
-      render: (content) => (
-        <ColumnContent content={content} />
-      ),
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
+      render: (content) => <ColumnContent content={content} />,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status) => (
         <span>
           <span
@@ -249,33 +275,26 @@ const handleChangeSelect = (value) => {
       ),
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (text) => new Date(text).toLocaleString(),
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
       render: (text) => new Date(text).toLocaleString(),
     },
     {
       title: "Actions",
       key: "actions",
       render: (record) => (
-        <div
-          style={{
-            display: "flex",
-            //  flexDirection : 'column',
-            gap: "10px",
-          }}
-        >
+        <div style={{ display: "flex", gap: "10px" }}>
           <Button onClick={() => handleCommentInfo(record)}>View</Button>
           <Popconfirm
-            key={record.id}
-            title="Update status this Comment"
-            description="Are you sure to update status this Comment?"
+            title="Update status of this Comment"
+            description="Are you sure you want to update the status of this Comment?"
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleUpdateComment(record)}
@@ -291,9 +310,8 @@ const handleChangeSelect = (value) => {
           </Popconfirm>
 
           <Popconfirm
-            key={record.id}
-            title="Delete this Comments"
-            description="Are you sure to delete this Comments?"
+            title="Delete this Comment"
+            description="Are you sure you want to delete this Comment?"
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteComments(record)}
@@ -307,51 +325,79 @@ const handleChangeSelect = (value) => {
 
   return (
     <div className="comment">
-       {contextHolder}
-<Button type="primary" onClick={showModal}>
+      {contextHolder}
+      <Button type="primary" onClick={showModal}>
         Create
       </Button>
-      <Modal title="Create comment" open={isModalOpen} footer={null} onCancel={handleCancel}>
+      <Modal
+        title="Create comment"
+        open={isModalOpen}
+        footer={null}
+        onCancel={handleCancel}
+      >
         <form onSubmit={handleSubmit}>
-          <Input placeholder="Enter comment" value={inputValue} onChange={handleChangeInput} />
-          <div style={{ padding: 10 }}></div>
-          <Space wrap>
+          <div
+            style={{ display: "flex", alignItems: "center", marginBottom: 10 }}
+          >
+            <label htmlFor="comment" style={{ marginRight: 10 }}>
+              Comment
+            </label>
+            <Input
+              id="comment"
+              placeholder="Enter comment"
+              value={inputValue}
+              onChange={handleChangeInput}
+              required
+              style={{ flex: 1 }}
+            />
+          </div>
+          <div
+            style={{ display: "flex", alignItems: "center", marginBottom: 10 }}
+          >
+            <label htmlFor="postContent" style={{ marginRight: 10 }}>
+              Post content
+            </label>
             <Select
+              id="postContent"
               value={selectOption}
               style={{ width: 120 }}
               onClick={handleChange}
               onChange={handleChangeSelect}
               options={postIDs}
+              required
             />
-          </Space>
-          <div style={{padding:10}}></div>
-          <Button type="primary" htmlType="submit">Submit</Button>
+          </div>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </form>
       </Modal>
-      <Modal title="" visible={commentInfoVisible}
-      onCancel={() => setCommentInforVisible(false)} footer={null}>
-        {
-          selectComment && (
-            <div>
-              <h2>Details comments</h2>
-              <div>
-                <p>
-                  <strong>Post_id</strong> {selectComment.post_id}
-                </p>
-                <p>
-                  <strong>User_id</strong> {selectComment.user_id}
-                </p>
-                <p>
-                  <strong>Content</strong> {selectComment.content}
-                </p>
-                <p>
-                  <strong>Status</strong> {selectComment.status}
-                </p>
-              </div>
-            </div>
-          )
-        }
 
+      <Modal
+        title="Comment Details"
+        visible={commentInfoVisible}
+        onCancel={() => setCommentInfoVisible(false)}
+        footer={null}
+      >
+        {selectComment && (
+          <div>
+            <h2>Details of the Comment</h2>
+            <div>
+              <p>
+                <strong>Post ID:</strong> {selectComment.post_id}
+              </p>
+              <p>
+                <strong>User ID:</strong> {selectComment.user_id}
+              </p>
+              <p>
+                <strong>Content:</strong> {selectComment.content}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectComment.status}
+              </p>
+            </div>
+          </div>
+        )}
       </Modal>
       <h1>Comments</h1>
       <Table
@@ -360,7 +406,6 @@ const handleChangeSelect = (value) => {
         rowKey="id"
         pagination={pagination}
         onChange={handleTableChange}
-        loading={loading}
       />
     </div>
   );
